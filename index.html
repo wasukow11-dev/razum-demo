@@ -13,7 +13,23 @@ body {
   padding: 16px;
 }
 
-h1 { margin-top: 0; }
+h1 { margin: 8px 0 0; }
+
+.header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.logo {
+  max-width: 140px;
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.contacts {
+  font-size: 14px;
+  color: #374151;
+}
 
 .role-btn {
   padding: 12px;
@@ -24,6 +40,7 @@ h1 { margin-top: 0; }
   font-size: 16px;
   background: #6366f1;
   color: #fff;
+  cursor: pointer;
 }
 
 .card {
@@ -60,81 +77,41 @@ h1 { margin-top: 0; }
 
 <body>
 
-<h1>РАЗУМ — демо</h1>
-<p>Логопедический центр • Петергоф</p>
+<!-- ШАПКА -->
+<div class="header">
+  <img src="logo.png" alt="Логотип РАЗУМ" class="logo">
+  <h1>РАЗУМ</h1>
+  <div class="contacts">
+    📞 <a href="tel:+78913450309">8 913 450-30-09</a><br>
+    📍 Санкт-Петербургский проспект, 60Л, 2 этаж
+  </div>
+</div>
 
+<!-- РОЛИ -->
 <div id="roles">
   <button class="role-btn" onclick="showParent()">Я родитель</button>
   <button class="role-btn" onclick="showSpeech()">Я логопед</button>
   <button class="role-btn" onclick="showAdmin()">Я администратор</button>
 </div>
 
-<!-- РОДИТЕЛЬ -->
-<div id="parent" class="hidden">
-  <h2>Мой ребёнок (4 года)</h2>
-
-  <div class="card">
-    <b>Фёдор</b><br>
-    Возраст: 4 года<br>
-    Цель: звук «Р»<br>
-    Уровень: 3 ⭐⭐⭐<br>
-
-    <div class="progress">
-      <div style="width:70%"></div>
-    </div>
-
-    <p>
-      <span class="badge">🏆 Молодец</span>
-      <span class="badge">🔥 5 дней подряд</span>
-    </p>
-  </div>
-
-  <button class="role-btn" onclick="back()">Назад</button>
-</div>
-
-<!-- ЛОГОПЕД -->
-<div id="speech" class="hidden">
-  <h2>Логопед: Васюкова А.А.</h2>
-
-  <div class="card">
-    <b>Артём (5 лет)</b><br>
-    Задание: слоги «РА–РО»<br>
-    Прогресс: 60%
-    <div class="progress"><div style="width:60%"></div></div>
-  </div>
-
-  <div class="card">
-    <b>Мирослава (6 лет)</b><br>
-    Задание: автоматизация «С»<br>
-    Прогресс: 85%
-    <div class="progress"><div style="width:85%"></div></div>
-  </div>
-
-  <button class="role-btn" onclick="back()">Назад</button>
-</div>
-
-<!-- АДМИНИСТРАТОР -->
-<div id="admin" class="hidden">
-  <h2>Администратор</h2>
-
-  <div class="card">
-    👩‍⚕️ Логопеды: 3<br>
-    👶 Дети: 40<br>
-    📈 Средний прогресс: 72%
-  </div>
-
-  <div class="card">
-    Центр работает стабильно ✔️
-  </div>
-
-  <button class="role-btn" onclick="back()">Назад</button>
-</div>
+<div id="parent" class="hidden"></div>
+<div id="speech" class="hidden"></div>
+<div id="admin" class="hidden"></div>
 
 <script>
+// ===== ДАННЫЕ =====
+const data = {
+  logopedists: {
+    "Васюкова А.А.": ["Артём", "Мирослава", "Фёдор"],
+    "Прокопенко С.Г.": ["Максим", "Тимофей"],
+    "Сафронова Н.Н.": ["Маша"]
+  }
+};
+
 const child = {
   name: "Фёдор",
-  age: 5,
-  level: 2,
+  age: 4,
+  level: 3,
   tasks: [
     { id: 1, text: "Произнести 10 слов со звуком Р", done: false },
     { id: 2, text: "Повторить скороговорку", done: false },
@@ -142,21 +119,53 @@ const child = {
   ]
 };
 
+// ===== СОХРАНЕНИЕ =====
 const saved = localStorage.getItem("childProgress");
 if (saved) Object.assign(child, JSON.parse(saved));
-
 function save() {
   localStorage.setItem("childProgress", JSON.stringify(child));
+}
+
+// ===== ОБЩЕЕ =====
+function hideAll() {
+  ["roles","parent","speech","admin"].forEach(id =>
+    document.getElementById(id).classList.add("hidden")
+  );
+}
+function back() {
+  hideAll();
+  document.getElementById("roles").classList.remove("hidden");
+}
+
+// ===== РОДИТЕЛЬ =====
+function progress() {
+  return Math.round(
+    (child.tasks.filter(t => t.done).length / child.tasks.length) * 100
+  );
+}
+
+function toggle(id) {
+  const t = child.tasks.find(x => x.id === id);
+  t.done = !t.done;
+  if (child.tasks.every(x => x.done)) child.level++;
+  save();
+  renderParent();
 }
 
 function renderParent() {
   hideAll();
   const p = document.getElementById("parent");
+
   p.innerHTML = `
-    <h2>${child.name} (${child.age} лет)</h2>
-    <p>Уровень: ${child.level} ⭐</p>
-    <div class="progress">
-      <div style="width:${progress()}%"></div>
+    <h2>${child.name} (${child.age} года)</h2>
+    <div class="card">
+      Уровень: ${child.level} ⭐⭐⭐<br>
+      Прогресс: ${progress()}%
+      <div class="progress"><div style="width:${progress()}%"></div></div>
+      <p>
+        <span class="badge">🏆 Молодец</span>
+        <span class="badge">🔥 Серия</span>
+      </p>
     </div>
     <h3>Задания на сегодня</h3>
   `;
@@ -176,25 +185,45 @@ function renderParent() {
   p.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
   p.classList.remove("hidden");
 }
+function showParent() { renderParent(); }
 
-function toggle(id) {
-  const t = child.tasks.find(x => x.id === id);
-  t.done = !t.done;
-  if (child.tasks.every(x => x.done)) child.level++;
-  save();
-  renderParent();
+// ===== ЛОГОПЕД =====
+function showSpeech() {
+  hideAll();
+  const el = document.getElementById("speech");
+  el.classList.remove("hidden");
+  el.innerHTML = "<h2>Логопед</h2>";
+
+  Object.entries(data.logopedists).forEach(([name, kids]) => {
+    el.innerHTML += `
+      <div class="card">
+        <b>${name}</b><br>
+        Детей: ${kids.length}
+      </div>
+    `;
+  });
+
+  el.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
 }
 
-function progress() {
-  return (child.tasks.filter(t => t.done).length / child.tasks.length) * 100;
-}
+// ===== АДМИН =====
+function showAdmin() {
+  hideAll();
+  const el = document.getElementById("admin");
+  el.classList.remove("hidden");
 
-function showParent() {
-  renderParent();
+  let totalKids = 0;
+  Object.values(data.logopedists).forEach(k => totalKids += k.length);
+
+  el.innerHTML = `
+    <h2>Администратор</h2>
+    <div class="card">👩‍⚕️ Логопедов: ${Object.keys(data.logopedists).length}</div>
+    <div class="card">👶 Детей всего: ${totalKids}</div>
+    <div class="card">📈 Центр работает стабильно ✅</div>
+    <button class="role-btn" onclick="back()">Назад</button>
+  `;
 }
 </script>
-
-
 
 </body>
 </html>
