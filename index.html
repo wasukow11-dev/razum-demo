@@ -1,133 +1,139 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>РАЗУМ — премиум демо</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>РАЗУМ — демо</title>
 
 <style>
 :root {
-  --bg: #f5f7fb;
-  --card: #ffffff;
-  --primary: #3b3f9b;
-  --secondary: #6366f1;
-  --accent: #fbbf24;
-  --success: #22c55e;
-  --text: #1f2937;
-  --muted: #6b7280;
+  --bg:#f5f7fb;
+  --card:#fff;
+  --primary:#3b3f9b;
+  --secondary:#6366f1;
+  --accent:#fbbf24;
+  --success:#22c55e;
+  --text:#1f2937;
+  --muted:#6b7280;
 }
 
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
-  padding-bottom: 80px;
-  font-family: Inter, Arial, sans-serif;
-  background: linear-gradient(180deg,#eef2ff,var(--bg));
-  color: var(--text);
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:linear-gradient(180deg,#eef2ff,var(--bg));
+  color:var(--text);
+  padding-bottom:90px;
 }
 
-header {
-  padding: 16px;
-}
+header{padding:16px}
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-img {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg,var(--primary),var(--secondary));
-  border-radius: 14px;
+.logo{
   display:flex;
+  gap:12px;
   align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-weight:900;
 }
 
-.card {
-  background: var(--card);
-  border-radius: 20px;
-  padding: 16px;
-  margin: 12px 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.08);
-  animation: fadeUp .3s ease;
+.logo-box{
+  width:48px;height:48px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;
 }
 
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(10px);}
-  to { opacity:1; transform:none;}
+.card{
+  background:var(--card);
+  border-radius:22px;
+  padding:16px;
+  margin:12px 16px;
+  box-shadow:0 12px 32px rgba(0,0,0,.08);
+  animation:fade .3s ease;
 }
 
-.progress {
-  background:#e5e7eb;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:8px;
-}
-.progress div {
-  height:10px;
-  background:linear-gradient(90deg,var(--success),#4ade80);
-  transition:.3s;
+@keyframes fade{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
 }
 
-.badge {
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:linear-gradient(135deg,var(--accent),#fde68a);
-  font-size:12px;
-  font-weight:600;
-  margin-top:6px;
-}
+h2{margin-top:0}
 
-.btn {
+button{
   width:100%;
   padding:14px;
   border:none;
-  border-radius:16px;
+  border-radius:18px;
   background:linear-gradient(135deg,var(--primary),var(--secondary));
   color:#fff;
   font-weight:600;
   margin-top:10px;
 }
 
-input, textarea {
-  width:100%;
-  padding:10px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
+.secondary{
+  background:#e5e7eb;
+  color:#111;
+}
+
+.progress{
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.progress div{
+  height:12px;
+  background:linear-gradient(90deg,var(--success),#4ade80);
+  transition:.4s;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),#fde68a);
+  font-size:12px;
+  font-weight:700;
   margin-top:6px;
 }
 
-.hidden { display:none; }
+.quest{
+  background:#f0f9ff;
+  border-radius:16px;
+  padding:12px;
+  margin-top:12px;
+  font-size:14px;
+}
 
-/* NAV */
-nav {
+.medal{
+  font-size:40px;
+  text-align:center;
+  animation:pop .4s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.5);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.hidden{display:none}
+
+nav{
   position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
+  bottom:0;left:0;right:0;
   background:#fff;
   display:flex;
   justify-content:space-around;
   padding:10px 0;
   box-shadow:0 -6px 20px rgba(0,0,0,.1);
 }
-
-nav button {
+nav button{
   background:none;
   border:none;
   font-weight:600;
   color:var(--muted);
 }
-nav button.active {
-  color:var(--primary);
-}
+nav button.active{color:var(--primary)}
 </style>
 </head>
 
@@ -135,7 +141,7 @@ nav button.active {
 
 <header>
   <div class="logo">
-    <div class="logo-img">R</div>
+    <div class="logo-box">R</div>
     <div>
       <b>РАЗУМ</b><br>
       <small>Логопедический центр • Петергоф</small>
@@ -143,68 +149,117 @@ nav button.active {
   </div>
 </header>
 
+<!-- ДОМ -->
 <div id="home" class="card">
-  <h2>Премиум-платформа развития речи</h2>
-  <p>Для детей 3–7 лет • Абонемент 8 занятий — 16 000 ₽</p>
+  <h2>О центре</h2>
+  <p>
+    Мы работаем с детьми от 3 до 7 лет в Петергофе.<br>
+    Индивидуальные занятия с логопедами.<br>
+    Родители видят прогресс и комментарии специалистов.
+  </p>
+  <p>
+    📍 Санкт-Петербургский проспект, 60Л, 2 этаж<br>
+    📞 8 913 450-30-09
+  </p>
+  <button onclick="openRole('parent')">Я родитель</button>
+  <button onclick="openRole('speech')">Я логопед</button>
+  <button onclick="openRole('admin')">Я администратор</button>
 </div>
 
-<div id="parent" class="hidden">
-  <div class="card">
-    <b>Фёдор • 5 лет</b><br>
-    Логопед: Васюкова А.А.<br>
-    Осталось занятий: 3
-    <div class="progress"><div id="pbar" style="width:60%"></div></div>
-    <span class="badge">⭐ Уровень 3</span>
-
-    <p>💬 Комментарий логопеда</p>
-    <textarea id="comment">Отличная динамика, звук Р стал стабильнее</textarea>
-
-    <button class="btn" onclick="completeTask()">Я выполнил задание 🎉</button>
-
-    <p>📅 Следующее занятие: сегодня 17:30</p>
-  </div>
-</div>
-
-<div id="speech" class="hidden">
-  <div class="card">
-    <b>Сегодня занятия</b>
-    <p>Фёдор — 17:30</p>
-    <button class="btn">Пришёл ✅</button>
-    <button class="btn" style="background:#ef4444">Пропуск ❌</button>
-  </div>
-</div>
-
-<div id="admin" class="hidden">
-  <div class="card">
-    <b>Отчёт за день</b><br>
-    Явки: 18<br>
-    Пропуски: 2<br>
-    Доход: 36 000 ₽
-  </div>
-</div>
+<div id="parent" class="hidden"></div>
+<div id="speech" class="hidden"></div>
+<div id="admin" class="hidden"></div>
 
 <nav>
-  <button onclick="show('home')" class="active">Дом</button>
-  <button onclick="show('parent')">Родитель</button>
-  <button onclick="show('speech')">Логопед</button>
-  <button onclick="show('admin')">Админ</button>
+  <button class="active" onclick="show('home',this)">Дом</button>
+  <button onclick="show('parent',this)">Родитель</button>
+  <button onclick="show('speech',this)">Логопед</button>
+  <button onclick="show('admin',this)">Админ</button>
 </nav>
 
 <script>
-let progress = 60;
+const data={
+  logopedists:{
+    "Васюкова А.А.":["Фёдор","Артём","Мирослава"],
+    "Прокопенко С.Г.":["Давид","Максим"],
+    "Сафронова Н.Н.":["Майя"]
+  }
+};
 
-function show(id){
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  ['home','parent','speech','admin'].forEach(x=>{
-    document.getElementById(x).classList.add('hidden');
+const children=JSON.parse(localStorage.getItem("children"))||{};
+function save(){localStorage.setItem("children",JSON.stringify(children))}
+
+function show(id,btn){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  ["home","parent","speech","admin"].forEach(x=>{
+    document.getElementById(x).classList.add("hidden");
   });
-  document.getElementById(id).classList.remove('hidden');
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function completeTask(){
-  progress = Math.min(progress+10,100);
-  document.getElementById('pbar').style.width = progress+'%';
+function openRole(r){
+  show(r);
+  if(r==="parent")renderParent();
+}
+
+function renderParent(){
+  const el=document.getElementById("parent");
+  el.innerHTML='<div class="card"><h2>Выберите логопеда</h2></div>';
+  Object.entries(data.logopedists).forEach(([l,k])=>{
+    el.innerHTML+=`
+      <div class="card">
+        <b>${l}</b><br>Детей: ${k.length}
+        <button onclick="showKids('${l}')">Открыть</button>
+      </div>`;
+  });
+}
+
+function showKids(l){
+  const el=document.getElementById("parent");
+  el.innerHTML=`<div class="card"><h2>${l}</h2></div>`;
+  data.logopedists[l].forEach(n=>{
+    if(!children[n])children[n]={progress:40,level:2,lessons:5,comments:[]};
+    el.innerHTML+=`
+      <div class="card">
+        <b>${n}</b>
+        <div class="progress"><div style="width:${children[n].progress}%"></div></div>
+        <button onclick="openChild('${n}')">Карточка</button>
+      </div>`;
+  });
+}
+
+function openChild(n){
+  const c=children[n];
+  const el=document.getElementById("parent");
+  el.innerHTML=`
+    <div class="card">
+      <h2>${n}</h2>
+      Осталось занятий: ${c.lessons}
+      <div class="progress"><div style="width:${c.progress}%"></div></div>
+      <span class="badge">⭐ Уровень ${c.level}</span>
+
+      <div class="quest">
+        🐻 Привет! Я твой помощник.<br>
+        Сделай задание — получишь звёздочку!
+      </div>
+
+      <button onclick="complete('${n}')">Я выполнил задание 🎉</button>
+    </div>`;
+}
+
+function complete(n){
+  const c=children[n];
+  c.progress+=20;
+  let reward="";
+  if(c.progress>=100){
+    c.level++;
+    c.progress=0;
+    reward='<div class="medal">🏅</div><p>Новый уровень!</p>';
+  }
+  save();
+  document.getElementById("parent").innerHTML+=reward;
+  openChild(n);
 }
 </script>
 
