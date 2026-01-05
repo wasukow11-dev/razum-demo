@@ -7,45 +7,59 @@
 
 <style>
 :root{
-  --primary:#4f46e5;
+  --primary:#6366f1;
   --accent:#22c55e;
-  --bg:#f8fafc;
-  --card:#ffffff;
-  --text:#1e293b;
+  --bg:#0f172a;
+  --card:rgba(30,41,59,.85);
+  --text:#e5e7eb;
+  --muted:#94a3b8;
 }
 
 body{
   margin:0;
   padding:16px;
   font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
-  background:var(--bg);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #1e1b4b, transparent),
+    radial-gradient(1200px 600px at 90% 10%, #312e81, transparent),
+    var(--bg);
   color:var(--text);
 }
 
-h1,h2,h3{margin:8px 0}
+h1,h2,h3{
+  margin:8px 0;
+  font-weight:600;
+}
 
 button{
   width:100%;
   padding:14px;
   margin:6px 0;
   border:none;
-  border-radius:16px;
+  border-radius:18px;
   background:linear-gradient(135deg,var(--primary),#818cf8);
   color:#fff;
   font-size:16px;
   cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
+button:hover{
+  transform:translateY(-1px);
 }
 
 .card{
   background:var(--card);
-  border-radius:20px;
+  backdrop-filter:blur(10px);
+  border-radius:22px;
   padding:18px;
   margin-bottom:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  box-shadow:0 20px 40px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.05);
 }
 
 .progress{
-  background:#e5e7eb;
+  background:#020617;
   border-radius:10px;
   overflow:hidden;
   margin:8px 0;
@@ -59,22 +73,39 @@ button{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top:8px;
+  margin-top:10px;
+  font-size:14px;
 }
-.task.done{opacity:.5;text-decoration:line-through}
+.task.done{
+  opacity:.5;
+  text-decoration:line-through;
+}
 
 .small{
   padding:6px 12px;
-  border-radius:10px;
+  border-radius:12px;
   background:var(--accent);
+  color:#022c22;
+  font-size:13px;
 }
 
 input{
   width:100%;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.08);
+  background:#020617;
+  color:var(--text);
   margin-top:6px;
+}
+
+input::placeholder{
+  color:var(--muted);
+}
+
+p{
+  color:var(--muted);
+  line-height:1.5;
 }
 
 .hidden{display:none}
@@ -87,11 +118,10 @@ input{
 
 <div class="card">
   <p>
-    <b>Логопедический центр в Петергофе</b><br><br>
-    Мы работаем с детьми от 3 до 7 лет, помогая развивать речь,
-    уверенность и коммуникативные навыки.
-    Каждый ребёнок занимается по индивидуальной программе,
-    а родители всегда видят прогресс и рекомендации специалиста.
+    <b style="color:#fff">Логопедический центр в Петергофе</b><br><br>
+    Мы помогаем детям развивать речь, уверенность и коммуникацию.
+    Работаем по индивидуальным программам, с прозрачным прогрессом
+    для родителей и удобной системой для специалистов.
   </p>
   <p>
     📞 8 913 450-30-29<br>
@@ -170,7 +200,7 @@ function childCard(name,log){
       age:3+Math.floor(Math.random()*4),
       level:1,
       lessons:8,
-      comment:"Хорошая динамика, продолжаем в том же темпе.",
+      comment:"Отличная концентрация на занятиях, заметен прогресс.",
       tasks:[
         {id:1,text:"Произнеси 10 слов с нужным звуком",done:false},
         {id:2,text:"Повтори упражнение перед зеркалом",done:false},
@@ -191,7 +221,7 @@ function childCard(name,log){
       ⭐ Уровень: ${c.level}
       <div class="progress"><div style="width:${done/3*100}%"></div></div>
 
-      <p><b>Комментарий логопеда:</b><br>${c.comment}</p>
+      <p><b style="color:#fff">Комментарий логопеда:</b><br>${c.comment}</p>
 
       <h3>🎯 Задания</h3>
       ${c.tasks.map(t=>`
@@ -239,7 +269,7 @@ function showAdmin(){
     </div>
 
     <div class="card">
-      <b>Калькулятор прибыли</b><br><br>
+      <b style="color:#fff">Калькулятор прибыли</b><br><br>
       Абонемент: 8 занятий = 16 000 ₽<br><br>
       <label>Количество детей</label>
       <input type="number" value="${kids}" id="calcKids" oninput="calc()">
