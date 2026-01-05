@@ -131,35 +131,93 @@ h1 { margin-top: 0; }
 </div>
 
 <script>
+const data = {
+  logopedists: {
+    "Васюкова А.А.": [
+      "Фёдор","Александр","Артём","Мирослава","Яся","Владимир",
+      "Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна",
+      "Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений",
+      "Вадим","Юлия","Кирилл","Зоя","Михаил"
+    ],
+    "Прокопенко С.Г.": [
+      "Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"
+    ],
+    "Сафронова Н.Н.": ["Майя"]
+  }
+};
+
 function hideAll() {
-  document.getElementById("roles").classList.add("hidden");
-  document.getElementById("parent").classList.add("hidden");
-  document.getElementById("speech").classList.add("hidden");
-  document.getElementById("admin").classList.add("hidden");
+  ["roles","parent","speech","admin"].forEach(id =>
+    document.getElementById(id).classList.add("hidden")
+  );
 }
 
 function showParent() {
   hideAll();
-  document.getElementById("parent").classList.remove("hidden");
+  const p = document.getElementById("parent");
+  p.innerHTML = "<h2>Родитель</h2>";
+
+  Object.values(data.logopedists).flat().forEach(name => {
+    p.innerHTML += `
+      <div class="card">
+        <b>${name}</b><br>
+        Возраст: ${3 + Math.floor(Math.random()*4)} лет<br>
+        Уровень: ${1 + Math.floor(Math.random()*5)} ⭐<br>
+        <div class="progress">
+          <div style="width:${40+Math.random()*60}%"></div>
+        </div>
+        <p>🎯 Задание: звук «Р»</p>
+        <img src="https://picsum.photos/300/180?random=${name.length}" style="width:100%;border-radius:12px">
+      </div>
+    `;
+  });
+
+  p.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
+  p.classList.remove("hidden");
 }
 
 function showSpeech() {
   hideAll();
-  document.getElementById("speech").classList.remove("hidden");
+  const s = document.getElementById("speech");
+  s.innerHTML = "<h2>Логопеды</h2>";
+
+  for (let log in data.logopedists) {
+    s.innerHTML += `<div class="card"><b>${log}</b><br>Дети: ${data.logopedists[log].join(", ")}</div>`;
+  }
+
+  s.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
+  s.classList.remove("hidden");
 }
 
 function showAdmin() {
   hideAll();
-  document.getElementById("admin").classList.remove("hidden");
+  const a = document.getElementById("admin");
+
+  a.innerHTML = `
+    <h2>Администратор</h2>
+    <div class="card">
+      👩‍⚕️ Логопеды: ${Object.keys(data.logopedists).length}<br>
+      👶 Дети: ${Object.values(data.logopedists).flat().length}<br>
+      🧠 Платформа активна
+    </div>
+    <div class="card">
+      📊 Прогресс отслеживается<br>
+      🏆 Награды включены<br>
+      📱 Мобильная версия готова
+    </div>
+    <button class="role-btn" onclick="back()">Назад</button>
+  `;
+  a.classList.remove("hidden");
 }
 
 function back() {
   document.getElementById("roles").classList.remove("hidden");
-  document.getElementById("parent").classList.add("hidden");
-  document.getElementById("speech").classList.add("hidden");
-  document.getElementById("admin").classList.add("hidden");
+  ["parent","speech","admin"].forEach(id =>
+    document.getElementById(id).classList.add("hidden")
+  );
 }
 </script>
+
 
 </body>
 </html>
