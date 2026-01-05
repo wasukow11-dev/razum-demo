@@ -137,9 +137,9 @@ p{
 </div>
 
 <div id="home">
-  <button onclick="showParent()">👨‍👩‍👧 Родитель</button>
-  <button onclick="showSpeech()">👩‍⚕️ Логопед</button>
-  <button onclick="showAdmin()">🛠 Администратор</button>
+  <button onclick="showParent()"> Клиент</button>
+  <button onclick="showSpeech()"> Специалист</button>
+  <button onclick="showAdmin()"> Администратор</button>
 </div>
 
 <div id="screen" class="hidden"></div>
@@ -180,7 +180,7 @@ function save(){
 
 function showParent(){
   const s=screen();
-  s.innerHTML="<h2>Выберите логопеда</h2>";
+  s.innerHTML="<h2>Выберите специалиста</h2>";
   Object.keys(data).forEach(l=>{
     s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
   });
