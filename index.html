@@ -36,6 +36,15 @@ button{
   box-shadow:0 8px 20px rgba(0,0,0,.08);
 }
 
+textarea{
+  width:100%;
+  min-height:80px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  padding:10px;
+  font-size:14px;
+}
+
 .progress{background:#e5e7eb;border-radius:12px;overflow:hidden}
 .progress div{height:12px;background:linear-gradient(90deg,#22c55e,#16a34a)}
 
@@ -73,7 +82,7 @@ button{
 <section id="screen"></section>
 
 <script>
-/* ===== ДАННЫЕ ДЕМО ===== */
+/* ===== ДАННЫЕ ===== */
 
 const logopedists = {
   "Васюкова Анастасия Александровна": [
@@ -87,31 +96,35 @@ const logopedists = {
   "Сафронова Наталья Николаевна": ["Майя"]
 };
 
-const children = [];
-let id=1;
-
-Object.entries(logopedists).forEach(([speech,kids])=>{
-  kids.forEach(name=>{
-    children.push({
-      id:id++,
-      name,
-      age:3+id%4,
-      speech,
-      stars:2+id%4,
-      level:1+id%3,
-      lessonsLeft:Math.max(0,8-id%5),
-      comment:"Хорошая динамика, продолжаем в том же темпе 👍",
-      nextLesson:"Сегодня 16:30",
-      visits:0,
-      misses:0
+let children = JSON.parse(localStorage.getItem("razum_children")) || [];
+if(children.length === 0){
+  let id=1;
+  Object.entries(logopedists).forEach(([speech,kids])=>{
+    kids.forEach(name=>{
+      children.push({
+        id:id++,
+        name,
+        age:3+id%4,
+        speech,
+        stars:2+id%4,
+        level:1+id%3,
+        lessonsLeft:8-id%5,
+        comment:"Положительная динамика, ребёнок старается 👍",
+        visits:0,
+        misses:0
+      });
     });
   });
-});
+  save();
+}
+
+function save(){
+  localStorage.setItem("razum_children", JSON.stringify(children));
+}
 
 /* ===== УТИЛИТЫ ===== */
 
 const screen=document.getElementById("screen");
-
 function clear(){screen.innerHTML="";document.getElementById("roles").classList.add("hidden")}
 function back(){screen.innerHTML="";document.getElementById("roles").classList.remove("hidden")}
 
@@ -131,38 +144,27 @@ function parentChildren(speech){
   screen.innerHTML=`<h2>${speech}</h2>`;
   children.filter(c=>c.speech===speech).forEach(c=>{
     screen.innerHTML+=`
-      <div class="card" onclick="childCard(${c.id})">
-        <b>${c.name}</b> (${c.age} лет)<br>
-        ⭐ ${c.stars} | 🏆 ${c.level}
+      <div class="card" onclick="childCard(${c.id}, false)">
+        <b>${c.name}</b> (${c.age} лет)
       </div>`;
   });
   screen.innerHTML+=`<button onclick="parentView()">Назад</button>`;
 }
 
-function childCard(id){
+function childCard(id,isSpeech){
   clear();
   const c=children.find(x=>x.id===id);
   screen.innerHTML=`
     <h2>${c.name}</h2>
     <div class="card">
       Логопед: ${c.speech}<br><br>
-      ⭐ Звёзды: ${c.stars}<br>
-      🏆 Уровень: ${c.level}
+      ⭐ ${c.stars} | 🏆 ${c.level}
       <div class="progress"><div style="width:${c.stars*20}%"></div></div><br>
-      🎟 Осталось занятий: <b>${c.lessonsLeft}</b><br>
-      📅 ${c.nextLesson}<br><br>
-      💬 Комментарий:<br>
-      <i>${c.comment}</i><br><br>
-      <button onclick="completeTask(${c.id})">🎮 Я выполнил задание</button>
+      🎟 Осталось занятий: <b>${c.lessonsLeft}</b><br><br>
+      💬 Комментарий логопеда:<br>
+      <i>${c.comment}</i>
     </div>
-    <button onclick="parentView()">Назад</button>`;
-}
-
-function completeTask(id){
-  const c=children.find(x=>x.id===id);
-  c.stars++;
-  if(c.stars%5===0) c.level++;
-  childCard(id);
+    <button onclick="${isSpeech?'speechView()':'parentView()'}">Назад</button>`;
 }
 
 /* ===== ЛОГОПЕД ===== */
@@ -177,46 +179,62 @@ function speechView(){
 
 function speechChildren(speech){
   clear();
-  screen.innerHTML=`<h2>${speech} — сегодня</h2>`;
+  screen.innerHTML=`<h2>${speech}</h2>`;
   children.filter(c=>c.speech===speech).forEach(c=>{
     screen.innerHTML+=`
-      <div class="card">
+      <div class="card" onclick="speechChild(${c.id})">
         <b>${c.name}</b><br>
-        Осталось занятий: ${c.lessonsLeft}<br><br>
-        <button onclick="visit(${c.id})">✅ Пришёл</button>
-        <button onclick="miss(${c.id})">❌ Пропустил</button>
+        Осталось занятий: ${c.lessonsLeft}
       </div>`;
   });
   screen.innerHTML+=`<button onclick="speechView()">Назад</button>`;
 }
 
+function speechChild(id){
+  clear();
+  const c=children.find(x=>x.id===id);
+  screen.innerHTML=`
+    <h2>${c.name}</h2>
+    <div class="card">
+      Осталось занятий: ${c.lessonsLeft}<br><br>
+
+      💬 Комментарий логопеда:
+      <textarea id="comment">${c.comment}</textarea><br>
+      <button onclick="saveComment(${c.id})">💾 Сохранить комментарий</button><br><br>
+
+      <button onclick="visit(${c.id})">✅ Пришёл</button>
+      <button onclick="miss(${c.id})">❌ Пропустил</button>
+    </div>
+    <button onclick="speechView()">Назад</button>`;
+}
+
+function saveComment(id){
+  const c=children.find(x=>x.id===id);
+  c.comment=document.getElementById("comment").value;
+  save();
+  alert("Комментарий сохранён");
+}
+
 function visit(id){
   const c=children.find(x=>x.id===id);
   c.visits++; if(c.lessonsLeft>0)c.lessonsLeft--;
-  speechView();
+  save(); speechView();
 }
 function miss(id){
   const c=children.find(x=>x.id===id);
-  c.misses++;
-  speechView();
+  c.misses++; save(); speechView();
 }
 
 /* ===== АДМИН ===== */
 
 function adminView(){
   clear();
-  screen.innerHTML="<h2>Администратор</h2>";
-  Object.entries(logopedists).forEach(([l,k])=>{
-    screen.innerHTML+=`<div class="card"><b>${l}</b><br>Детей: ${k.length}</div>`;
-  });
-  const visits=children.reduce((a,c)=>a+c.visits,0);
-  const misses=children.reduce((a,c)=>a+c.misses,0);
-  screen.innerHTML+=`
-    <div class="card">
-      📊 Отчёт:<br>
-      Явки: ${visits}<br>
-      Пропуски: ${misses}
-    </div>
+  let visits=children.reduce((a,c)=>a+c.visits,0);
+  let misses=children.reduce((a,c)=>a+c.misses,0);
+  screen.innerHTML=`
+    <h2>Администратор</h2>
+    <div class="card">👶 Детей: ${children.length}</div>
+    <div class="card">📊 Явки: ${visits}<br>Пропуски: ${misses}</div>
     <button onclick="back()">Назад</button>`;
 }
 </script>
