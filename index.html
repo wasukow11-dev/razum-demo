@@ -1,241 +1,210 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>РАЗУМ — демо платформы</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>РАЗУМ — премиум демо</title>
 
 <style>
-body {
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:linear-gradient(180deg,#eef2ff,#ffffff);
-  padding:16px;
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --primary: #3b3f9b;
+  --secondary: #6366f1;
+  --accent: #fbbf24;
+  --success: #22c55e;
+  --text: #1f2937;
+  --muted: #6b7280;
 }
-.header{text-align:center;margin-bottom:16px}
-.logo{font-size:34px;font-weight:bold;color:#4f46e5}
-.sub{font-size:14px;color:#555}
-.contacts{font-size:13px;margin-top:6px}
 
-button{
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding-bottom: 80px;
+  font-family: Inter, Arial, sans-serif;
+  background: linear-gradient(180deg,#eef2ff,var(--bg));
+  color: var(--text);
+}
+
+header {
+  padding: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg,var(--primary),var(--secondary));
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:900;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 16px;
+  margin: 12px 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  animation: fadeUp .3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px);}
+  to { opacity:1; transform:none;}
+}
+
+.progress {
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.progress div {
+  height:10px;
+  background:linear-gradient(90deg,var(--success),#4ade80);
+  transition:.3s;
+}
+
+.badge {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--accent),#fde68a);
+  font-size:12px;
+  font-weight:600;
+  margin-top:6px;
+}
+
+.btn {
   width:100%;
   padding:14px;
   border:none;
   border-radius:16px;
-  background:#6366f1;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
   color:#fff;
-  font-size:16px;
-  margin:6px 0;
+  font-weight:600;
+  margin-top:10px;
 }
 
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:12px;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-
-textarea{
+input, textarea {
   width:100%;
-  min-height:80px;
-  border-radius:12px;
-  border:1px solid #ccc;
   padding:10px;
-  font-size:14px;
-}
-
-.progress{background:#e5e7eb;border-radius:12px;overflow:hidden}
-.progress div{height:12px;background:linear-gradient(90deg,#22c55e,#16a34a)}
-
-.badge{
-  display:inline-block;
-  background:#fde68a;
-  padding:4px 10px;
   border-radius:12px;
-  font-size:12px;
+  border:1px solid #e5e7eb;
   margin-top:6px;
 }
 
-.hidden{display:none}
-.small{font-size:13px;color:#555}
+.hidden { display:none; }
+
+/* NAV */
+nav {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -6px 20px rgba(0,0,0,.1);
+}
+
+nav button {
+  background:none;
+  border:none;
+  font-weight:600;
+  color:var(--muted);
+}
+nav button.active {
+  color:var(--primary);
+}
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <div class="logo">РАЗУМ</div>
-  <div class="sub">Логопедический центр • Петергоф</div>
-  <div class="contacts">
-    📍 Санкт-Петербургский проспект 60Л, 2 этаж<br>
-    📞 8 913 450-30-09
+<header>
+  <div class="logo">
+    <div class="logo-img">R</div>
+    <div>
+      <b>РАЗУМ</b><br>
+      <small>Логопедический центр • Петергоф</small>
+    </div>
+  </div>
+</header>
+
+<div id="home" class="card">
+  <h2>Премиум-платформа развития речи</h2>
+  <p>Для детей 3–7 лет • Абонемент 8 занятий — 16 000 ₽</p>
+</div>
+
+<div id="parent" class="hidden">
+  <div class="card">
+    <b>Фёдор • 5 лет</b><br>
+    Логопед: Васюкова А.А.<br>
+    Осталось занятий: 3
+    <div class="progress"><div id="pbar" style="width:60%"></div></div>
+    <span class="badge">⭐ Уровень 3</span>
+
+    <p>💬 Комментарий логопеда</p>
+    <textarea id="comment">Отличная динамика, звук Р стал стабильнее</textarea>
+
+    <button class="btn" onclick="completeTask()">Я выполнил задание 🎉</button>
+
+    <p>📅 Следующее занятие: сегодня 17:30</p>
   </div>
 </div>
 
-<div id="roles">
-  <button onclick="parentView()">Я родитель</button>
-  <button onclick="speechView()">Я логопед</button>
-  <button onclick="adminView()">Я администратор</button>
+<div id="speech" class="hidden">
+  <div class="card">
+    <b>Сегодня занятия</b>
+    <p>Фёдор — 17:30</p>
+    <button class="btn">Пришёл ✅</button>
+    <button class="btn" style="background:#ef4444">Пропуск ❌</button>
+  </div>
 </div>
 
-<section id="screen"></section>
+<div id="admin" class="hidden">
+  <div class="card">
+    <b>Отчёт за день</b><br>
+    Явки: 18<br>
+    Пропуски: 2<br>
+    Доход: 36 000 ₽
+  </div>
+</div>
+
+<nav>
+  <button onclick="show('home')" class="active">Дом</button>
+  <button onclick="show('parent')">Родитель</button>
+  <button onclick="show('speech')">Логопед</button>
+  <button onclick="show('admin')">Админ</button>
+</nav>
 
 <script>
-/* ===== ДАННЫЕ ===== */
+let progress = 60;
 
-const logopedists = {
-  "Васюкова Анастасия Александровна": [
-    "Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита",
-    "Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша",
-    "Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"
-  ],
-  "Прокопенко Светлана Геннадьевна": [
-    "Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"
-  ],
-  "Сафронова Наталья Николаевна": ["Майя"]
-};
-
-let children = JSON.parse(localStorage.getItem("razum_children")) || [];
-if(children.length === 0){
-  let id=1;
-  Object.entries(logopedists).forEach(([speech,kids])=>{
-    kids.forEach(name=>{
-      children.push({
-        id:id++,
-        name,
-        age:3+id%4,
-        speech,
-        stars:2+id%4,
-        level:1+id%3,
-        lessonsLeft:8-id%5,
-        comment:"Положительная динамика, ребёнок старается 👍",
-        visits:0,
-        misses:0
-      });
-    });
+function show(id){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  ['home','parent','speech','admin'].forEach(x=>{
+    document.getElementById(x).classList.add('hidden');
   });
-  save();
+  document.getElementById(id).classList.remove('hidden');
 }
 
-function save(){
-  localStorage.setItem("razum_children", JSON.stringify(children));
-}
-
-/* ===== УТИЛИТЫ ===== */
-
-const screen=document.getElementById("screen");
-function clear(){screen.innerHTML="";document.getElementById("roles").classList.add("hidden")}
-function back(){screen.innerHTML="";document.getElementById("roles").classList.remove("hidden")}
-
-/* ===== РОДИТЕЛЬ ===== */
-
-function parentView(){
-  clear();
-  screen.innerHTML="<h2>Логопеды</h2>";
-  Object.keys(logopedists).forEach(l=>{
-    screen.innerHTML+=`<div class="card" onclick="parentChildren('${l}')"><b>${l}</b></div>`;
-  });
-  screen.innerHTML+=`<button onclick="back()">Назад</button>`;
-}
-
-function parentChildren(speech){
-  clear();
-  screen.innerHTML=`<h2>${speech}</h2>`;
-  children.filter(c=>c.speech===speech).forEach(c=>{
-    screen.innerHTML+=`
-      <div class="card" onclick="childCard(${c.id}, false)">
-        <b>${c.name}</b> (${c.age} лет)
-      </div>`;
-  });
-  screen.innerHTML+=`<button onclick="parentView()">Назад</button>`;
-}
-
-function childCard(id,isSpeech){
-  clear();
-  const c=children.find(x=>x.id===id);
-  screen.innerHTML=`
-    <h2>${c.name}</h2>
-    <div class="card">
-      Логопед: ${c.speech}<br><br>
-      ⭐ ${c.stars} | 🏆 ${c.level}
-      <div class="progress"><div style="width:${c.stars*20}%"></div></div><br>
-      🎟 Осталось занятий: <b>${c.lessonsLeft}</b><br><br>
-      💬 Комментарий логопеда:<br>
-      <i>${c.comment}</i>
-    </div>
-    <button onclick="${isSpeech?'speechView()':'parentView()'}">Назад</button>`;
-}
-
-/* ===== ЛОГОПЕД ===== */
-
-function speechView(){
-  clear();
-  Object.keys(logopedists).forEach(l=>{
-    screen.innerHTML+=`<div class="card" onclick="speechChildren('${l}')"><b>${l}</b></div>`;
-  });
-  screen.innerHTML+=`<button onclick="back()">Назад</button>`;
-}
-
-function speechChildren(speech){
-  clear();
-  screen.innerHTML=`<h2>${speech}</h2>`;
-  children.filter(c=>c.speech===speech).forEach(c=>{
-    screen.innerHTML+=`
-      <div class="card" onclick="speechChild(${c.id})">
-        <b>${c.name}</b><br>
-        Осталось занятий: ${c.lessonsLeft}
-      </div>`;
-  });
-  screen.innerHTML+=`<button onclick="speechView()">Назад</button>`;
-}
-
-function speechChild(id){
-  clear();
-  const c=children.find(x=>x.id===id);
-  screen.innerHTML=`
-    <h2>${c.name}</h2>
-    <div class="card">
-      Осталось занятий: ${c.lessonsLeft}<br><br>
-
-      💬 Комментарий логопеда:
-      <textarea id="comment">${c.comment}</textarea><br>
-      <button onclick="saveComment(${c.id})">💾 Сохранить комментарий</button><br><br>
-
-      <button onclick="visit(${c.id})">✅ Пришёл</button>
-      <button onclick="miss(${c.id})">❌ Пропустил</button>
-    </div>
-    <button onclick="speechView()">Назад</button>`;
-}
-
-function saveComment(id){
-  const c=children.find(x=>x.id===id);
-  c.comment=document.getElementById("comment").value;
-  save();
-  alert("Комментарий сохранён");
-}
-
-function visit(id){
-  const c=children.find(x=>x.id===id);
-  c.visits++; if(c.lessonsLeft>0)c.lessonsLeft--;
-  save(); speechView();
-}
-function miss(id){
-  const c=children.find(x=>x.id===id);
-  c.misses++; save(); speechView();
-}
-
-/* ===== АДМИН ===== */
-
-function adminView(){
-  clear();
-  let visits=children.reduce((a,c)=>a+c.visits,0);
-  let misses=children.reduce((a,c)=>a+c.misses,0);
-  screen.innerHTML=`
-    <h2>Администратор</h2>
-    <div class="card">👶 Детей: ${children.length}</div>
-    <div class="card">📊 Явки: ${visits}<br>Пропуски: ${misses}</div>
-    <button onclick="back()">Назад</button>`;
+function completeTask(){
+  progress = Math.min(progress+10,100);
+  document.getElementById('pbar').style.width = progress+'%';
 }
 </script>
 
