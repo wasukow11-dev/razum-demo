@@ -37,7 +37,7 @@ textarea, input, select {
 <body>
 
 <header>
-  <img src="logo.png.jpg" class="logo">
+  <img src="logo.png.jpg" class="logo" alt="РАЗУМ логотип">
   <h1>РАЗУМ</h1>
   <p>Логопедический центр • Петергоф</p>
   <p>📞 8 913 450-30-29<br>📍 Санкт-Петербургский проспект 60Л, 2 этаж</p>
@@ -57,159 +57,225 @@ textarea, input, select {
 const data = JSON.parse(localStorage.getItem("razumData")) || {
   currentChildId: 1,
   currentTherapistId: 1,
-
-  admin: { name:"Васюков Юрий Сергеевич" },
-
+  admin: { name: "Васюков Юрий Сергеевич" },
   speechTherapists: [
-    {id:1,name:"Васюкова Анастасия Александровна"},
-    {id:2,name:"Прокопенко Светлана Геннадьевна"},
-    {id:3,name:"Сафронова Наталья Николаевна"}
+    { id: 1, name: "Васюкова Анастасия Александровна" },
+    { id: 2, name: "Прокопенко Светлана Геннадьевна" },
+    { id: 3, name: "Сафронова Наталья Николаевна" }
   ],
-
   children: [
-    {id:1,name:"Фёдор",age:4,therapistId:1,tasks:[],comment:""},
-    {id:2,name:"Александр",age:5,therapistId:1,tasks:[],comment:""},
-    {id:3,name:"Артём",age:5,therapistId:1,tasks:[],comment:""},
-    {id:4,name:"Мирослава",age:4,therapistId:1,tasks:[],comment:""},
-    {id:5,name:"Яся",age:4,therapistId:1,tasks:[],comment:""},
-    {id:6,name:"Владимир",age:6,therapistId:1,tasks:[],comment:""},
-    {id:7,name:"Маргарита",age:6,therapistId:1,tasks:[],comment:""},
-    {id:8,name:"Алексей",age:7,therapistId:1,tasks:[],comment:""},
-    {id:9,name:"Константин",age:7,therapistId:1,tasks:[],comment:""},
-    {id:10,name:"Пётр",age:5,therapistId:1,tasks:[],comment:""},
-    {id:11,name:"Елизавета",age:6,therapistId:1,tasks:[],comment:""},
-    {id:12,name:"Алёна",age:5,therapistId:1,tasks:[],comment:""},
-    {id:13,name:"Мия",age:4,therapistId:1,tasks:[],comment:""},
-    {id:14,name:"Таир",age:6,therapistId:1,tasks:[],comment:""},
-    {id:15,name:"Стеша",age:4,therapistId:1,tasks:[],comment:""},
-    {id:16,name:"Леонид",age:7,therapistId:1,tasks:[],comment:""},
-    {id:17,name:"Савелий",age:6,therapistId:1,tasks:[],comment:""},
-    {id:18,name:"Арина",age:5,therapistId:1,tasks:[],comment:""},
-    {id:19,name:"Евгений",age:7,therapistId:1,tasks:[],comment:""},
-    {id:20,name:"Вадим",age:6,therapistId:1,tasks:[],comment:""},
-    {id:21,name:"Юлия",age:6,therapistId:1,tasks:[],comment:""},
-    {id:22,name:"Кирилл",age:5,therapistId:1,tasks:[],comment:""},
-    {id:23,name:"Зоя",age:4,therapistId:1,tasks:[],comment:""},
-    {id:24,name:"Михаил",age:7,therapistId:1,tasks:[],comment:""},
+    { id: 1, name: "Фёдор", age: 4, therapistId: 1, tasks: [{ id: 101, text: "Произнести 10 слов со звуком Р", done: false }, { id: 102, text: "Слоги РА-РО-РУ", done: false }], comment: "" },
+    { id: 2, name: "Александр", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 3, name: "Артём", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 4, name: "Мирослава", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 5, name: "Яся", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 6, name: "Владимир", age: 7, therapistId: 1, tasks: [], comment: "" },
+    { id: 7, name: "Маргарита", age: 4, therapistId: 1, tasks: [], comment: "" },
+    { id: 8, name: "Алексей", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 9, name: "Константин", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 10, name: "Пётр", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 11, name: "Елизавета", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 12, name: "Алёна", age: 4, therapistId: 1, tasks: [], comment: "" },
+    { id: 13, name: "Мия", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 14, name: "Таир", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 15, name: "Стеша", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 16, name: "Леонид", age: 7, therapistId: 1, tasks: [], comment: "" },
+    { id: 17, name: "Савелий", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 18, name: "Арина", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 19, name: "Евгений", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 20, name: "Вадим", age: 7, therapistId: 1, tasks: [], comment: "" },
+    { id: 21, name: "Юлия", age: 5, therapistId: 1, tasks: [], comment: "" },
+    { id: 22, name: "Кирилл", age: 6, therapistId: 1, tasks: [], comment: "" },
+    { id: 23, name: "Зоя", age: 7, therapistId: 1, tasks: [], comment: "" },
+    { id: 24, name: "Михаил", age: 5, therapistId: 1, tasks: [], comment: "" },
 
-    {id:25,name:"Давид",age:6,therapistId:2,tasks:[],comment:""},
-    {id:26,name:"Максим",age:5,therapistId:2,tasks:[],comment:""},
-    {id:27,name:"Максим",age:6,therapistId:2,tasks:[],comment:""},
-    {id:28,name:"Максим",age:7,therapistId:2,tasks:[],comment:""},
-    {id:29,name:"Татьяна",age:7,therapistId:2,tasks:[],comment:""},
-    {id:30,name:"Илья",age:6,therapistId:2,tasks:[],comment:""},
-    {id:31,name:"Глеб",age:6,therapistId:2,tasks:[],comment:""},
-    {id:32,name:"Фёдор",age:5,therapistId:2,tasks:[],comment:""},
+    { id: 25, name: "Давид", age: 5, therapistId: 2, tasks: [], comment: "" },
+    { id: 26, name: "Максим", age: 6, therapistId: 2, tasks: [], comment: "" },
+    { id: 27, name: "Максим", age: 5, therapistId: 2, tasks: [], comment: "" },
+    { id: 28, name: "Максим", age: 7, therapistId: 2, tasks: [], comment: "" },
+    { id: 29, name: "Татьяна", age: 6, therapistId: 2, tasks: [], comment: "" },
+    { id: 30, name: "Илья", age: 5, therapistId: 2, tasks: [], comment: "" },
+    { id: 31, name: "Глеб", age: 6, therapistId: 2, tasks: [], comment: "" },
+    { id: 32, name: "Фёдор", age: 4, therapistId: 2, tasks: [], comment: "" },
 
-    {id:33,name:"Майя",age:4,therapistId:3,tasks:[],comment:""}
+    { id: 33, name: "Майя", age: 5, therapistId: 3, tasks: [], comment: "" }
   ]
 };
 
-function save(){localStorage.setItem("razumData",JSON.stringify(data));}
-function hideAll(){["roles","parent","speech","admin"].forEach(id=>document.getElementById(id).classList.add("hidden"));}
-function back(){hideAll();document.getElementById("roles").classList.remove("hidden");}
+function save() {
+  localStorage.setItem("razumData", JSON.stringify(data));
+}
 
-function currentChild(){return data.children.find(c=>c.id===data.currentChildId);}
-function therapistChildren(){return data.children.filter(c=>c.therapistId===data.currentTherapistId);}
+function getCurrentTherapist() {
+  return data.speechTherapists.find(t => t.id === data.currentTherapistId);
+}
+
+function getCurrentChild() {
+  return data.children.find(c => c.id === data.currentChildId);
+}
+
+function hideAll() {
+  ["roles", "parent", "speech", "admin"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+}
+
+function back() {
+  hideAll();
+  document.getElementById("roles").classList.remove("hidden");
+}
+
+function childSelector() {
+  // Выбираем детей у текущего логопеда
+  const children = data.children.filter(c => c.therapistId === data.currentTherapistId);
+  if (children.length === 0) return `<p>Нет детей для выбранного логопеда.</p>`;
+
+  return `
+    <select onchange="changeChild(this.value)">
+      ${children.map(c =>
+        `<option value="${c.id}" ${c.id === data.currentChildId ? "selected" : ""}>
+          ${c.name} (${c.age})
+        </option>`).join("")}
+    </select>
+  `;
+}
+
+function therapistSelector() {
+  return `
+    <select onchange="changeTherapist(this.value)">
+      ${data.speechTherapists.map(t =>
+        `<option value="${t.id}" ${t.id === data.currentTherapistId ? "selected" : ""}>
+          ${t.name}
+        </option>`).join("")}
+    </select>
+  `;
+}
+
+function changeChild(id) {
+  data.currentChildId = Number(id);
+  save();
+  showSpeech();
+}
+
+function changeTherapist(id) {
+  data.currentTherapistId = Number(id);
+  // После смены логопеда переключаемся на первого ребенка этого логопеда (если есть)
+  const children = data.children.filter(c => c.therapistId === data.currentTherapistId);
+  data.currentChildId = children.length > 0 ? children[0].id : null;
+  save();
+  showSpeech();
+}
 
 /* РОДИТЕЛЬ */
-function showParent(){
+function showParent() {
   hideAll();
-  const c=currentChild();
-  const p=document.getElementById("parent");
-  p.innerHTML=`
+  const c = getCurrentChild();
+  const p = document.getElementById("parent");
+
+  if (!c) {
+    p.innerHTML = `<p>Выберите ребёнка в меню родителя.</p><button class="role-btn" onclick="back()">Назад</button>`;
+    p.classList.remove("hidden");
+    return;
+  }
+
+  p.innerHTML = `
+    ${childSelector()}
     <h2>${c.name} (${c.age} года)</h2>
-    <p><b>Комментарий логопеда:</b><br>${c.comment||"—"}</p>
+    <p><b>Комментарий логопеда:</b><br>${c.comment || "—"}</p>
     <div class="progress"><div style="width:${progress(c)}%"></div></div>
     <h3>Задания</h3>
-    ${c.tasks.map(t=>`
+  `;
+
+  c.tasks.forEach(t => {
+    p.innerHTML += `
       <div class="card">
         <label>
-          <input type="checkbox" ${t.done?"checked":""} onchange="toggle(${t.id})">
+          <input type="checkbox" ${t.done ? "checked" : ""}
+            onchange="toggle(${t.id})">
           ${t.text}
         </label>
-      </div>`).join("")}
-    <button class="role-btn" onclick="back()">Назад</button>`;
+      </div>`;
+  });
+
+  p.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
   p.classList.remove("hidden");
 }
 
-/* ЛОГОПЕД — ИСПРАВЛЕНО */
-function showSpeech(){
+function toggle(id) {
+  const c = getCurrentChild();
+  if (!c) return;
+  const t = c.tasks.find(x => x.id === id);
+  if (t) t.done = !t.done;
+  save();
+  showParent();
+}
+
+function progress(c) {
+  if (!c.tasks.length) return 0;
+  return c.tasks.filter(t => t.done).length / c.tasks.length * 100;
+}
+
+/* ЛОГОПЕД */
+function showSpeech() {
   hideAll();
-  const s=document.getElementById("speech");
 
-  const children = therapistChildren();
+  const s = document.getElementById("speech");
+  const therapist = getCurrentTherapist();
 
-  if (!children.length) {
-    s.innerHTML = `
-      <div class="card">У логопеда пока нет детей</div>
-      <button class="role-btn" onclick="back()">Назад</button>`;
+  if (!therapist) {
+    s.innerHTML = `<p>Выберите логопеда.</p><button class="role-btn" onclick="back()">Назад</button>`;
     s.classList.remove("hidden");
     return;
   }
 
-  if (!children.find(c => c.id === data.currentChildId)) {
-    data.currentChildId = children[0].id;
-    save();
-  }
+  const c = getCurrentChild();
 
-  const c = currentChild();
-
-  s.innerHTML=`
-    <select onchange="data.currentTherapistId=Number(this.value);save();showSpeech()">
-      ${data.speechTherapists.map(l=>`
-        <option value="${l.id}" ${l.id===data.currentTherapistId?"selected":""}>
-          ${l.name}
-        </option>`).join("")}
-    </select>
-
-    <select onchange="data.currentChildId=Number(this.value);save();showSpeech()">
-      ${children.map(ch=>`
-        <option value="${ch.id}" ${ch.id===c.id?"selected":""}>
-          ${ch.name}
-        </option>`).join("")}
-    </select>
-
+  s.innerHTML = `
+    ${therapistSelector()}
+    ${childSelector()}
+    <h2>Логопед: ${therapist.name}</h2>
     <div class="card">
-      <textarea onchange="c.comment=this.value;save()">${c.comment}</textarea>
-      <input id="taskText" placeholder="Новое задание">
+      <b>${c ? c.name : "Нет выбранного ребёнка"}</b><br>
+      <textarea placeholder="Комментарий родителю" oninput="updateComment(this.value)">${c ? c.comment : ""}</textarea>
+
+      <h4>Новое задание</h4>
+      <input id="taskText" placeholder="Введите задание">
       <button class="role-btn" onclick="addTask()">Добавить</button>
     </div>
-
-    <button class="role-btn" onclick="back()">Назад</button>`;
+    <button class="role-btn" onclick="back()">Назад</button>
+  `;
   s.classList.remove("hidden");
 }
 
-function addTask(){
-  const t=document.getElementById("taskText").value;
-  if(!t) return;
-  currentChild().tasks.push({id:Date.now(),text:t,done:false});
-  save();showSpeech();
+function updateComment(value) {
+  const c = getCurrentChild();
+  if (!c) return;
+  c.comment = value;
+  save();
+}
+
+function addTask() {
+  const text = document.getElementById("taskText").value.trim();
+  if (!text) return;
+  const c = getCurrentChild();
+  if (!c) return;
+  c.tasks.push({ id: Date.now(), text, done: false });
+  save();
+  showSpeech();
 }
 
 /* АДМИН */
-function showAdmin(){
+function showAdmin() {
   hideAll();
-  const a=document.getElementById("admin");
-  a.innerHTML=`
+  const a = document.getElementById("admin");
+  a.innerHTML = `
     <h2>Администратор</h2>
-    <div class="card"><b>${data.admin.name}</b></div>
-    ${data.speechTherapists.map(l=>`
-      <div class="card">
-        <b>${l.name}</b><br>
-        ${data.children.filter(c=>c.therapistId===l.id).map(c=>c.name).join(", ")}
-      </div>`).join("")}
-    <button class="role-btn" onclick="back()">Назад</button>`;
+    <div class="card">👶 Детей: ${data.children.length}</div>
+    <div class="card">👩‍⚕️ Логопедов: ${data.speechTherapists.length}</div>
+    <div class="card">Центр работает стабильно ✅</div>
+    <button class="role-btn" onclick="back()">Назад</button>
+  `;
   a.classList.remove("hidden");
-}
-
-function toggle(id){
-  const t=currentChild().tasks.find(x=>x.id===id);
-  t.done=!t.done;save();showParent();
-}
-function progress(c){
-  if(!c.tasks.length) return 0;
-  return c.tasks.filter(t=>t.done).length/c.tasks.length*100;
 }
 
 save();
