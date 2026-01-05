@@ -131,43 +131,44 @@ h1 { margin-top: 0; }
 </div>
 
 <script>
-const data = {
-  logopedists: {
-    "Васюкова А.А.": [
-      "Фёдор","Александр","Артём","Мирослава","Яся","Владимир",
-      "Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна",
-      "Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений",
-      "Вадим","Юлия","Кирилл","Зоя","Михаил"
-    ],
-    "Прокопенко С.Г.": [
-      "Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"
-    ],
-    "Сафронова Н.Н.": ["Майя"]
-  }
+const child = {
+  name: "Фёдор",
+  age: 5,
+  level: 2,
+  tasks: [
+    { id: 1, text: "Произнести 10 слов со звуком Р", done: false },
+    { id: 2, text: "Повторить скороговорку", done: false },
+    { id: 3, text: "Игра «Найди Р»", done: false }
+  ]
 };
 
-function hideAll() {
-  ["roles","parent","speech","admin"].forEach(id =>
-    document.getElementById(id).classList.add("hidden")
-  );
+const saved = localStorage.getItem("childProgress");
+if (saved) Object.assign(child, JSON.parse(saved));
+
+function save() {
+  localStorage.setItem("childProgress", JSON.stringify(child));
 }
 
-function showParent() {
+function renderParent() {
   hideAll();
   const p = document.getElementById("parent");
-  p.innerHTML = "<h2>Родитель</h2>";
+  p.innerHTML = `
+    <h2>${child.name} (${child.age} лет)</h2>
+    <p>Уровень: ${child.level} ⭐</p>
+    <div class="progress">
+      <div style="width:${progress()}%"></div>
+    </div>
+    <h3>Задания на сегодня</h3>
+  `;
 
-  Object.values(data.logopedists).flat().forEach(name => {
+  child.tasks.forEach(t => {
     p.innerHTML += `
       <div class="card">
-        <b>${name}</b><br>
-        Возраст: ${3 + Math.floor(Math.random()*4)} лет<br>
-        Уровень: ${1 + Math.floor(Math.random()*5)} ⭐<br>
-        <div class="progress">
-          <div style="width:${40+Math.random()*60}%"></div>
-        </div>
-        <p>🎯 Задание: звук «Р»</p>
-        <img src="https://picsum.photos/300/180?random=${name.length}" style="width:100%;border-radius:12px">
+        <label>
+          <input type="checkbox" ${t.done ? "checked" : ""}
+            onchange="toggle(${t.id})">
+          ${t.text}
+        </label>
       </div>
     `;
   });
@@ -176,47 +177,23 @@ function showParent() {
   p.classList.remove("hidden");
 }
 
-function showSpeech() {
-  hideAll();
-  const s = document.getElementById("speech");
-  s.innerHTML = "<h2>Логопеды</h2>";
-
-  for (let log in data.logopedists) {
-    s.innerHTML += `<div class="card"><b>${log}</b><br>Дети: ${data.logopedists[log].join(", ")}</div>`;
-  }
-
-  s.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
-  s.classList.remove("hidden");
+function toggle(id) {
+  const t = child.tasks.find(x => x.id === id);
+  t.done = !t.done;
+  if (child.tasks.every(x => x.done)) child.level++;
+  save();
+  renderParent();
 }
 
-function showAdmin() {
-  hideAll();
-  const a = document.getElementById("admin");
-
-  a.innerHTML = `
-    <h2>Администратор</h2>
-    <div class="card">
-      👩‍⚕️ Логопеды: ${Object.keys(data.logopedists).length}<br>
-      👶 Дети: ${Object.values(data.logopedists).flat().length}<br>
-      🧠 Платформа активна
-    </div>
-    <div class="card">
-      📊 Прогресс отслеживается<br>
-      🏆 Награды включены<br>
-      📱 Мобильная версия готова
-    </div>
-    <button class="role-btn" onclick="back()">Назад</button>
-  `;
-  a.classList.remove("hidden");
+function progress() {
+  return (child.tasks.filter(t => t.done).length / child.tasks.length) * 100;
 }
 
-function back() {
-  document.getElementById("roles").classList.remove("hidden");
-  ["parent","speech","admin"].forEach(id =>
-    document.getElementById(id).classList.add("hidden")
-  );
+function showParent() {
+  renderParent();
 }
 </script>
+
 
 
 </body>
