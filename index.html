@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>РАЗУМ — демо</title>
+<title>РАЗУМ — логопедический центр</title>
 
 <style>
 body {
@@ -12,78 +12,35 @@ body {
   margin: 0;
   padding: 16px;
 }
-
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.logo {
-  width: 140px;
-  margin: 0 auto 10px;
-  display: block;
-}
-
-.contacts {
-  font-size: 14px;
-  color: #374151;
-}
-
+header { text-align:center; margin-bottom:16px; }
+.logo { max-width:140px; margin:0 auto 8px; display:block; }
 .role-btn {
-  padding: 12px;
-  margin: 6px 0;
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  font-size: 16px;
-  background: #6366f1;
-  color: #fff;
+  width:100%; padding:12px; margin:6px 0;
+  border:none; border-radius:14px;
+  font-size:16px; background:#6366f1; color:#fff;
 }
-
 .card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  background:#fff; border-radius:16px;
+  padding:16px; margin-bottom:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
-
-.progress {
-  background: #e5e7eb;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 6px;
+.progress { background:#e5e7eb; border-radius:10px; overflow:hidden; }
+.progress div { background:#22c55e; height:10px; }
+.hidden { display:none; }
+textarea, input {
+  width:100%; padding:8px; margin-top:6px;
+  border-radius:8px; border:1px solid #ccc;
 }
-.progress div {
-  background: #22c55e;
-  height: 10px;
-}
-
-.badge {
-  display: inline-block;
-  background: #fde68a;
-  padding: 4px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  margin-right: 4px;
-}
-
-.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
 <header>
-  <!-- ВСТРОЕННЫЙ ЛОГОТИП -->
-  <img class="logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAACXBIWXMAAAsSAAALEgHS3X78AAAgAElEQVR4nOydeZBV1b3HP+fc5..." />
-  
+  <img src="logo.png.jpg" class="logo">
   <h1>РАЗУМ</h1>
-  <div class="contacts">
-    Логопедический центр • Петергоф<br>
-    📍 Санкт-Петербургский проспект 60Л, 2 этаж<br>
-    📞 8 913 450-30-29
-  </div>
+  <p>Логопедический центр • Петергоф</p>
+  <p>📞 8 913 450-30-29<br>📍 Санкт-Петербургский проспект 60Л, 2 этаж</p>
 </header>
 
 <div id="roles">
@@ -97,29 +54,26 @@ header {
 <div id="admin" class="hidden"></div>
 
 <script>
-const data = {
-  logopedists: {
-    "Васюкова А.А.": ["Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"],
-    "Прокопенко С.Г.": ["Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"],
-    "Сафронова Н.Н.": ["Майя"]
+const data = JSON.parse(localStorage.getItem("razumData")) || {
+  child: {
+    name: "Фёдор",
+    age: 4,
+    tasks: [
+      { id:1, text:"Произнести 10 слов со звуком Р", done:false },
+      { id:2, text:"Слоги РА-РО-РУ", done:false }
+    ],
+    comment: ""
   }
 };
 
-const child = {
-  name: "Фёдор",
-  age: 5,
-  level: 2,
-  tasks: [
-    { id: 1, text: "Произнести 10 слов со звуком Р", done: false },
-    { id: 2, text: "Повторить скороговорку", done: false },
-    { id: 3, text: "Игра «Найди Р»", done: false }
-  ]
-};
+function save() {
+  localStorage.setItem("razumData", JSON.stringify(data));
+}
 
 function hideAll() {
-  ["roles","parent","speech","admin"].forEach(id =>
-    document.getElementById(id).classList.add("hidden")
-  );
+  ["roles","parent","speech","admin"].forEach(id=>{
+    document.getElementById(id).classList.add("hidden");
+  });
 }
 
 function back() {
@@ -127,20 +81,22 @@ function back() {
   document.getElementById("roles").classList.remove("hidden");
 }
 
+/* РОДИТЕЛЬ */
 function showParent() {
   hideAll();
   const p = document.getElementById("parent");
   p.innerHTML = `
-    <h2>${child.name} (${child.age} лет)</h2>
-    <p>Уровень: ${child.level} ⭐</p>
+    <h2>${data.child.name} (${data.child.age} года)</h2>
+    <p><b>Комментарий логопеда:</b><br>${data.child.comment || "—"}</p>
     <div class="progress"><div style="width:${progress()}%"></div></div>
     <h3>Задания</h3>
   `;
-  child.tasks.forEach(t => {
+  data.child.tasks.forEach(t=>{
     p.innerHTML += `
       <div class="card">
         <label>
-          <input type="checkbox" ${t.done ? "checked" : ""} onchange="toggle(${t.id})">
+          <input type="checkbox" ${t.done?"checked":""}
+            onchange="toggle(${t.id})">
           ${t.text}
         </label>
       </div>`;
@@ -149,41 +105,52 @@ function showParent() {
   p.classList.remove("hidden");
 }
 
-function toggle(id) {
-  const t = child.tasks.find(x => x.id === id);
-  t.done = !t.done;
-  if (child.tasks.every(x => x.done)) child.level++;
-  showParent();
+function toggle(id){
+  const t = data.child.tasks.find(x=>x.id===id);
+  t.done=!t.done; save(); showParent();
+}
+function progress(){
+  return data.child.tasks.filter(t=>t.done).length / data.child.tasks.length * 100;
 }
 
-function progress() {
-  return (child.tasks.filter(t => t.done).length / child.tasks.length) * 100;
-}
-
+/* ЛОГОПЕД */
 function showSpeech() {
   hideAll();
-  const el = document.getElementById("speech");
-  el.innerHTML = "<h2>Логопеды</h2>";
-  Object.entries(data.logopedists).forEach(([name,kids])=>{
-    el.innerHTML += `<div class="card"><b>${name}</b><br>Детей: ${kids.length}</div>`;
-  });
-  el.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
-  el.classList.remove("hidden");
+  const s = document.getElementById("speech");
+  s.innerHTML = `
+    <h2>Логопед</h2>
+    <div class="card">
+      <b>${data.child.name}</b><br>
+      <textarea placeholder="Комментарий родителю"
+        onchange="data.child.comment=this.value;save()">${data.child.comment}</textarea>
+      <h4>Новое задание</h4>
+      <input id="taskText" placeholder="Введите задание">
+      <button class="role-btn" onclick="addTask()">Добавить</button>
+    </div>
+    <button class="role-btn" onclick="back()">Назад</button>
+  `;
+  s.classList.remove("hidden");
 }
 
-function showAdmin() {
+function addTask(){
+  const text=document.getElementById("taskText").value;
+  if(!text) return;
+  data.child.tasks.push({id:Date.now(),text,done:false});
+  save(); showSpeech();
+}
+
+/* АДМИН */
+function showAdmin(){
   hideAll();
-  let total = 0;
-  Object.values(data.logopedists).forEach(k=>total+=k.length);
-  const el = document.getElementById("admin");
-  el.innerHTML = `
+  const a=document.getElementById("admin");
+  a.innerHTML=`
     <h2>Администратор</h2>
-    <div class="card">Логопедов: ${Object.keys(data.logopedists).length}</div>
-    <div class="card">Детей: ${total}</div>
+    <div class="card">👶 Детей: 1</div>
+    <div class="card">👩‍⚕️ Логопедов: 3</div>
     <div class="card">Центр работает стабильно ✅</div>
     <button class="role-btn" onclick="back()">Назад</button>
   `;
-  el.classList.remove("hidden");
+  a.classList.remove("hidden");
 }
 </script>
 
