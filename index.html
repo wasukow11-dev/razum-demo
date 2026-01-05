@@ -7,10 +7,10 @@
 
 <style>
 :root{
-  --primary:#6366f1;
-  --accent:#22c55e;
   --bg:#020617;
   --card:#020617ee;
+  --primary:#6366f1;
+  --accent:#22c55e;
   --text:#f8fafc;
   --muted:#94a3b8;
   --back:#334155;
@@ -19,15 +19,10 @@
 body{
   margin:0;
   padding:16px;
-  font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
-  background:
-    radial-gradient(1000px 500px at 20% -10%, #0f172a, transparent),
-    radial-gradient(800px 400px at 90% 10%, #020617, transparent),
-    var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,Arial;
+  background:var(--bg);
   color:var(--text);
 }
-
-h1,h2,h3{margin:8px 0}
 
 button{
   width:100%;
@@ -40,57 +35,34 @@ button{
   font-size:16px;
 }
 
-.back-btn{
-  background:linear-gradient(135deg,var(--back),#475569);
-}
+.back{background:linear-gradient(135deg,var(--back),#475569)}
 
 .card{
   background:var(--card);
-  border-radius:22px;
-  padding:18px;
+  border-radius:20px;
+  padding:16px;
   margin-bottom:14px;
-  box-shadow:0 20px 40px rgba(0,0,0,.6);
-}
-
-.progress{
-  background:#020617;
-  border-radius:10px;
-  overflow:hidden;
-}
-.progress div{
-  height:10px;
-  background:linear-gradient(90deg,var(--accent),#4ade80);
 }
 
 .task{
   display:flex;
-  justify-content:space-between;
+  gap:8px;
   align-items:center;
-  margin:8px 0;
-}
-.task.done{
-  opacity:.5;
-  text-decoration:line-through;
+  margin:6px 0;
 }
 
-.small{
-  padding:6px 12px;
-  border-radius:12px;
-  background:var(--accent);
-  color:#022c22;
-  font-size:13px;
-}
+.task.done{opacity:.5;text-decoration:line-through}
 
-textarea{
+.hidden{display:none}
+
+select,textarea{
   width:100%;
-  padding:10px;
+  padding:8px;
   border-radius:12px;
   background:#020617;
   color:#fff;
-  border:1px solid rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
 }
-
-.hidden{display:none}
 </style>
 </head>
 
@@ -119,9 +91,9 @@ textarea{
 </div>
 
 <div id="home">
-  <button onclick="showParent()">👨‍👩‍👧 Родитель</button>
-  <button onclick="showSpeech()">👩‍⚕️ Логопед</button>
-  <button onclick="showAdmin()">🛠 Администратор</button>
+<button onclick="showParent()">Родитель</button>
+<button onclick="showSpeech()">Логопед</button>
+<button onclick="showAdmin()">Администратор</button>
 </div>
 
 <div id="screen" class="hidden"></div>
@@ -130,144 +102,126 @@ textarea{
 const PRICE=16000;
 
 const data={
-  "Васюкова А.А.":["Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"],
-  "Прокопенко С.Г.":["Давид","Максим","Максим (2)","Максим (3)","Татьяна","Илья","Глеб","Фёдор П."],
+  "Васюкова А.А.":["Фёдор","Артём","Мирослава","Александр","Яся"],
+  "Прокопенко С.Г.":["Давид","Максим","Илья"],
   "Сафронова Н.Н.":["Майя"]
 };
 
-const store=JSON.parse(localStorage.getItem("razumStore"))||{};
+const store=JSON.parse(localStorage.getItem("razum"))||{};
 
-function screen(){
-  document.getElementById("home").classList.add("hidden");
-  const s=document.getElementById("screen");
-  s.classList.remove("hidden");
-  return s;
-}
-function back(){
-  document.getElementById("screen").classList.add("hidden");
-  document.getElementById("home").classList.remove("hidden");
-}
-function save(){localStorage.setItem("razumStore",JSON.stringify(store))}
+function save(){localStorage.setItem("razum",JSON.stringify(store))}
+function screen(){home.classList.add("hidden");screenEl.classList.remove("hidden");return screenEl}
+function back(){screenEl.classList.add("hidden");home.classList.remove("hidden")}
+
+const home=document.getElementById("home");
+const screenEl=document.getElementById("screen");
 
 function initChild(name,log){
-  if(store[name])return;
-  store[name]={
-    name,log,
-    level:1,
-    lessons:8,
-    comment:"Отмечается положительная динамика.",
-    tasks:[
-      {id:1,text:"Произнеси слова с нужным звуком",status:"assigned"},
-      {id:2,text:"Упражнение перед зеркалом",status:"assigned"},
-      {id:3,text:"Игровая автоматизация",status:"assigned"}
-    ]
-  };
-  save();
+ if(store[name])return;
+ store[name]={
+   name,log,
+   tasks:[
+     {text:"Произнести слова со звуком Р",status:"active"},
+     {text:"Артикуляционная гимнастика",status:"active"}
+   ]
+ };
+ save();
 }
 
-/* ===== РОДИТЕЛЬ ===== */
+/* === РОДИТЕЛЬ === */
 function showParent(){
-  const s=screen();
-  s.innerHTML="<h2>Выберите логопеда</h2>";
-  Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`);
-  s.innerHTML+=`<button class="back-btn" onclick="back()">Назад</button>`;
+ const s=screen(); s.innerHTML="<h2>Выберите логопеда</h2>";
+ Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`);
+ s.innerHTML+=`<button class="back" onclick="back()">Назад</button>`;
 }
 function parentKids(log){
-  const s=screen();
-  s.innerHTML=`<h2>${log}</h2>`;
-  data[log].forEach(k=>s.innerHTML+=`<button onclick="childParent('${k}','${log}')">${k}</button>`);
-  s.innerHTML+=`<button class="back-btn" onclick="showParent()">Назад</button>`;
+ const s=screen(); s.innerHTML=`<h2>${log}</h2>`;
+ data[log].forEach(k=>s.innerHTML+=`<button onclick="parentChild('${k}','${log}')">${k}</button>`);
+ s.innerHTML+=`<button class="back" onclick="showParent()">Назад</button>`;
 }
-function childParent(name,log){
-  initChild(name,log);
-  const c=store[name];
-  const s=screen();
-  s.innerHTML=`
-    <h2>${name}</h2>
-    <div class="card">
-      ⭐ Уровень ${c.level}<br>
-      🎟 Осталось занятий: ${c.lessons}<br><br>
-      ${c.tasks.map(t=>`
-        <div class="task ${t.status==='done'?'done':''}">
-          ${t.text}
-          ${
-            t.status==='assigned'
-              ? `<button class="small" onclick="request('${name}',${t.id})">Я выполнил</button>`
-              : t.status==='requested'
-                ? '⏳ На проверке'
-                : '✔️'
-          }
-        </div>`).join("")}
-      <p><b>Комментарий логопеда:</b><br>${c.comment}</p>
-    </div>
-    <button class="back-btn" onclick="parentKids('${log}')">Назад</button>`;
+function parentChild(name,log){
+ initChild(name,log);
+ const c=store[name];
+ const s=screen();
+ s.innerHTML=`
+ <h2>${name}</h2>
+ <div class="card">
+ ${c.tasks.map((t,i)=>`
+  <div class="task ${t.status==='done'?'done':''}">
+   ${t.status==='active'?`<input type="checkbox" onchange="toggle('${name}',${i})">`:''}
+   ${t.text} (${t.status})
+  </div>`).join("")}
+ <button onclick="send('${name}')">Я выполнил задания</button>
+ </div>
+ <button class="back" onclick="parentKids('${log}')">Назад</button>`;
 }
-function request(name,id){
-  const t=store[name].tasks.find(x=>x.id===id);
-  if(t.status==='assigned'){t.status='requested';save();}
-  childParent(name,store[name].log);
+function toggle(name,i){
+ const t=store[name].tasks[i];
+ if(t.status==="active")t.checked=!t.checked;
+ save();
+}
+function send(name){
+ const c=store[name];
+ if(!c.tasks.every(t=>t.checked))return alert("Отметьте все задания");
+ c.tasks.forEach(t=>{t.status="review";delete t.checked});
+ save(); parentChild(name,c.log);
 }
 
-/* ===== ЛОГОПЕД ===== */
+/* === ЛОГОПЕД === */
 function showSpeech(){
-  const s=screen();
-  s.innerHTML="<h2>Логопеды</h2>";
-  Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="speechKids('${l}')">${l}</button>`);
-  s.innerHTML+=`<button class="back-btn" onclick="back()">Назад</button>`;
+ const s=screen(); s.innerHTML="<h2>Логопеды</h2>";
+ Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="speechKids('${l}')">${l}</button>`);
+ s.innerHTML+=`<button class="back" onclick="back()">Назад</button>`;
 }
 function speechKids(log){
-  const s=screen();
-  s.innerHTML=`<h2>${log}</h2>`;
-  data[log].forEach(k=>s.innerHTML+=`<button onclick="childSpeech('${k}','${log}')">${k}</button>`);
-  s.innerHTML+=`<button class="back-btn" onclick="showSpeech()">Назад</button>`;
+ const s=screen(); s.innerHTML=`<h2>${log}</h2>`;
+ data[log].forEach(k=>s.innerHTML+=`<button onclick="speechChild('${k}','${log}')">${k}</button>`);
+ s.innerHTML+=`<button class="back" onclick="showSpeech()">Назад</button>`;
 }
-function childSpeech(name,log){
-  initChild(name,log);
-  const c=store[name];
-  const s=screen();
-  s.innerHTML=`
-    <h2>${name}</h2>
-    <div class="card">
-      ${c.tasks.map(t=>`
-        <div class="task">
-          ${t.text}
-          ${
-            t.status==='requested'
-              ? `<button class="small" onclick="approve('${name}',${t.id})">Подтвердить</button>`
-              : t.status==='done'
-                ? '✔️'
-                : '—'
-          }
-        </div>`).join("")}
-      <textarea onchange="comment('${name}',this.value)">${c.comment}</textarea>
-    </div>
-    <button class="back-btn" onclick="speechKids('${log}')">Назад</button>`;
+function speechChild(name,log){
+ initChild(name,log);
+ const c=store[name];
+ const review=c.tasks.every(t=>t.status==="review");
+ const s=screen();
+ s.innerHTML=`
+ <h2>${name}</h2>
+ <div class="card">
+ ${c.tasks.map(t=>`<div class="task">${t.text} (${t.status})</div>`).join("")}
+ ${review?`
+ <button onclick="approve('${name}')">Подтвердить выполнение</button>
+ <select id="newTasks" multiple>
+   <option>Автоматизация звука</option>
+   <option>Слоговые цепочки</option>
+   <option>Игровое задание</option>
+ </select>
+ <button onclick="assign('${name}')">Назначить новые</button>
+ `:""}
+ </div>
+ <button class="back" onclick="speechKids('${log}')">Назад</button>`;
 }
-function approve(name,id){
-  const c=store[name];
-  const t=c.tasks.find(x=>x.id===id);
-  if(t.status==='requested'){
-    t.status='done';
-    if(c.tasks.every(x=>x.status==='done')) c.level++;
-    save();
-  }
-  childSpeech(name,c.log);
+function approve(name){
+ store[name].tasks.forEach(t=>t.status="done");
+ save(); speechChild(name,store[name].log);
 }
-function comment(name,val){store[name].comment=val;save()}
+function assign(name){
+ const sel=[...document.getElementById("newTasks").selectedOptions].map(o=>o.value);
+ if(!sel.length)return;
+ store[name].tasks=sel.map(t=>({text:t,status:"active"}));
+ save(); speechChild(name,store[name].log);
+}
 
-/* ===== АДМИН ===== */
+/* === АДМИН === */
 function showAdmin(){
-  const kids=Object.values(data).flat().length;
-  const s=screen();
-  s.innerHTML=`
-    <h2>Администратор</h2>
-    <div class="card">
-      👶 Детей: ${kids}<br>
-      💰 Доход в месяц: ${(kids*PRICE).toLocaleString()} ₽
-    </div>
-    <button class="back-btn" onclick="back()">Назад</button>`;
+ const kids=Object.values(data).flat().length;
+ const s=screen();
+ s.innerHTML=`
+ <h2>Администратор</h2>
+ <div class="card">
+ 👶 Детей: ${kids}<br>
+ 💰 Доход: ${(kids*PRICE).toLocaleString()} ₽
+ </div>
+ <button class="back" onclick="back()">Назад</button>`;
 }
 </script>
-
 </body>
 </html>
