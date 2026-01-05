@@ -3,44 +3,33 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>РАЗУМ — логопедический центр</title>
-
+<title>РАЗУМ — демо логопедический центр</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(180deg,#eef2ff,#ffffff);
-  margin: 0;
-  padding: 16px;
-}
-header { text-align:center; margin-bottom:16px; }
-.logo { max-width:140px; margin:0 auto 8px; display:block; }
-.role-btn {
-  width:100%; padding:12px; margin:6px 0;
-  border:none; border-radius:14px;
-  font-size:16px; background:#6366f1; color:#fff;
-}
-.card {
-  background:#fff; border-radius:16px;
-  padding:16px; margin-bottom:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.08);
-}
-.progress { background:#e5e7eb; border-radius:10px; overflow:hidden; }
-.progress div { background:#22c55e; height:10px; }
-.hidden { display:none; }
-textarea, input, select {
-  width:100%; padding:8px; margin-top:6px;
-  border-radius:8px; border:1px solid #ccc;
-}
+body { font-family: Arial,sans-serif; background: linear-gradient(180deg,#eef2ff,#ffffff); margin:0; padding:16px;}
+header{text-align:center;margin-bottom:16px;}
+.logo{max-width:140px;margin:0 auto 8px;display:block;}
+.role-btn{width:100%;padding:12px;margin:6px 0;border:none;border-radius:14px;font-size:16px;background:#6366f1;color:#fff;cursor:pointer;}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+.progress{background:#e5e7eb;border-radius:10px;overflow:hidden;}
+.progress div{background:#22c55e;height:10px;}
+.hidden{display:none;}
+textarea,input,select{width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ccc;}
+.avatar{width:40px;height:40px;border-radius:50%;margin-right:8px;vertical-align:middle;}
+.flex{display:flex;align-items:center;justify-content:space-between;}
+.attendance{cursor:pointer;font-weight:bold;}
+.attendance.attended{color:green;}
+.schedule-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.schedule-table th, .schedule-table td{border:1px solid #ccc;padding:6px;text-align:center;}
+.float-right{float:right;}
 </style>
 </head>
-
 <body>
 
 <header>
-  <img src="logo.png.jpg" class="logo" alt="РАЗУМ логотип">
-  <h1>РАЗУМ</h1>
-  <p>Логопедический центр • Петергоф</p>
-  <p>📞 8 913 450-30-29<br>📍 Санкт-Петербургский проспект 60Л, 2 этаж</p>
+<img src="logo.png.jpg" class="logo">
+<h1>РАЗУМ</h1>
+<p>Логопедический центр • Петергоф</p>
+<p>📞 8 913 450-30-29<br>📍 Санкт-Петербургский проспект 60Л, 2 этаж</p>
 </header>
 
 <div id="roles">
@@ -54,232 +43,154 @@ textarea, input, select {
 <div id="admin" class="hidden"></div>
 
 <script>
-const data = JSON.parse(localStorage.getItem("razumData")) || {
-  currentChildId: 1,
-  currentTherapistId: 1,
-  admin: { name: "Васюков Юрий Сергеевич" },
-  speechTherapists: [
-    { id: 1, name: "Васюкова Анастасия Александровна" },
-    { id: 2, name: "Прокопенко Светлана Геннадьевна" },
-    { id: 3, name: "Сафронова Наталья Николаевна" }
+// ======== ДАННЫЕ ДЕМО ========
+const data=JSON.parse(localStorage.getItem("razumDemo"))||{
+  currentChildId:1,
+  currentTherapistId:1,
+  children:[
+    {id:1,name:"Фёдор",age:4,avatar:"avatar1.png",therapistId:1,totalLessons:8,attendance:[],tasks:[{id:1,text:"Произнести 10 слов со звуком Р",done:false}],comment:""},
+    {id:2,name:"Александр",age:5,avatar:"avatar2.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:3,name:"Артём",age:4,avatar:"avatar3.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:4,name:"Мирослава",age:6,avatar:"avatar4.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:5,name:"Яся",age:5,avatar:"avatar5.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:6,name:"Владимир",age:7,avatar:"avatar6.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:7,name:"Маргарита",age:4,avatar:"avatar7.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:8,name:"Алексей",age:6,avatar:"avatar8.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:9,name:"Константин",age:5,avatar:"avatar9.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:10,name:"Пётр",age:6,avatar:"avatar10.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:11,name:"Елизавета",age:7,avatar:"avatar11.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:12,name:"Алёна",age:5,avatar:"avatar12.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:13,name:"Мия",age:4,avatar:"avatar13.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:14,name:"Таир",age:5,avatar:"avatar14.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:15,name:"Стеша",age:6,avatar:"avatar15.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:16,name:"Леонид",age:7,avatar:"avatar16.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:17,name:"Савелий",age:4,avatar:"avatar17.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:18,name:"Арина",age:5,avatar:"avatar18.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:19,name:"Евгений",age:6,avatar:"avatar19.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:20,name:"Вадим",age:7,avatar:"avatar20.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:21,name:"Юлия",age:5,avatar:"avatar21.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:22,name:"Кирилл",age:6,avatar:"avatar22.png",therapistId:1,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:23,name:"Зоя",age:7,avatar:"avatar23.png",therapistId:1,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:24,name:"Михаил",age:4,avatar:"avatar24.png",therapistId:1,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:25,name:"Давид",age:5,avatar:"avatar25.png",therapistId:2,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:26,name:"Максим",age:6,avatar:"avatar26.png",therapistId:2,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:27,name:"Максим",age:7,avatar:"avatar27.png",therapistId:2,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:28,name:"Максим",age:4,avatar:"avatar28.png",therapistId:2,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:29,name:"Татьяна",age:5,avatar:"avatar29.png",therapistId:2,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:30,name:"Илья",age:6,avatar:"avatar30.png",therapistId:2,totalLessons:4,attendance:[],tasks:[],comment:""},
+    {id:31,name:"Глеб",age:7,avatar:"avatar31.png",therapistId:2,totalLessons:8,attendance:[],tasks:[],comment:""},
+    {id:32,name:"Фёдор",age:5,avatar:"avatar32.png",therapistId:2,totalLessons:12,attendance:[],tasks:[],comment:""},
+    {id:33,name:"Майя",age:6,avatar:"avatar33.png",therapistId:3,totalLessons:8,attendance:[],tasks:[],comment:""}
   ],
-  children: [
-    { id: 1, name: "Фёдор", age: 4, therapistId: 1, tasks: [{ id: 101, text: "Произнести 10 слов со звуком Р", done: false }, { id: 102, text: "Слоги РА-РО-РУ", done: false }], comment: "" },
-    { id: 2, name: "Александр", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 3, name: "Артём", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 4, name: "Мирослава", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 5, name: "Яся", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 6, name: "Владимир", age: 7, therapistId: 1, tasks: [], comment: "" },
-    { id: 7, name: "Маргарита", age: 4, therapistId: 1, tasks: [], comment: "" },
-    { id: 8, name: "Алексей", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 9, name: "Константин", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 10, name: "Пётр", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 11, name: "Елизавета", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 12, name: "Алёна", age: 4, therapistId: 1, tasks: [], comment: "" },
-    { id: 13, name: "Мия", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 14, name: "Таир", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 15, name: "Стеша", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 16, name: "Леонид", age: 7, therapistId: 1, tasks: [], comment: "" },
-    { id: 17, name: "Савелий", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 18, name: "Арина", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 19, name: "Евгений", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 20, name: "Вадим", age: 7, therapistId: 1, tasks: [], comment: "" },
-    { id: 21, name: "Юлия", age: 5, therapistId: 1, tasks: [], comment: "" },
-    { id: 22, name: "Кирилл", age: 6, therapistId: 1, tasks: [], comment: "" },
-    { id: 23, name: "Зоя", age: 7, therapistId: 1, tasks: [], comment: "" },
-    { id: 24, name: "Михаил", age: 5, therapistId: 1, tasks: [], comment: "" },
-
-    { id: 25, name: "Давид", age: 5, therapistId: 2, tasks: [], comment: "" },
-    { id: 26, name: "Максим", age: 6, therapistId: 2, tasks: [], comment: "" },
-    { id: 27, name: "Максим", age: 5, therapistId: 2, tasks: [], comment: "" },
-    { id: 28, name: "Максим", age: 7, therapistId: 2, tasks: [], comment: "" },
-    { id: 29, name: "Татьяна", age: 6, therapistId: 2, tasks: [], comment: "" },
-    { id: 30, name: "Илья", age: 5, therapistId: 2, tasks: [], comment: "" },
-    { id: 31, name: "Глеб", age: 6, therapistId: 2, tasks: [], comment: "" },
-    { id: 32, name: "Фёдор", age: 4, therapistId: 2, tasks: [], comment: "" },
-
-    { id: 33, name: "Майя", age: 5, therapistId: 3, tasks: [], comment: "" }
-  ]
+  therapists:[
+    {id:1,name:"Васюкова Анастасия Александровна"},
+    {id:2,name:"Прокопенко Светлана Геннадьевна"},
+    {id:3,name:"Сафронова Наталья Николаевна"}
+  ],
+  admins:[{id:1,name:"Васюков Юрий Сергеевич"}]
 };
 
-function save() {
-  localStorage.setItem("razumData", JSON.stringify(data));
-}
+function save(){localStorage.setItem("razumDemo",JSON.stringify(data));}
+function hideAll(){["roles","parent","speech","admin"].forEach(id=>document.getElementById(id).classList.add("hidden"));}
+function back(){hideAll();document.getElementById("roles").classList.remove("hidden");}
+function currentChild(){return data.children.find(c=>c.id===data.currentChildId);}
+function getCurrentTherapist(){return data.therapists.find(t=>t.id===data.currentTherapistId);}
 
-function getCurrentTherapist() {
-  return data.speechTherapists.find(t => t.id === data.currentTherapistId);
+// ======== Родитель ========
+function childSelector(){
+  return `<select onchange="changeChild(this.value)">
+    ${data.children.map(c=>`<option value="${c.id}" ${c.id===data.currentChildId?"selected":""}>${c.name} (${c.age})</option>`).join("")}
+  </select>`;
 }
-
-function getCurrentChild() {
-  return data.children.find(c => c.id === data.currentChildId);
-}
-
-function hideAll() {
-  ["roles", "parent", "speech", "admin"].forEach(id => {
-    document.getElementById(id).classList.add("hidden");
-  });
-}
-
-function back() {
+function changeChild(id){data.currentChildId=Number(id);save();showParent();}
+function showParent(){
   hideAll();
-  document.getElementById("roles").classList.remove("hidden");
-}
-
-function childSelector() {
-  // Выбираем детей у текущего логопеда
-  const children = data.children.filter(c => c.therapistId === data.currentTherapistId);
-  if (children.length === 0) return `<p>Нет детей для выбранного логопеда.</p>`;
-
-  return `
-    <select onchange="changeChild(this.value)">
-      ${children.map(c =>
-        `<option value="${c.id}" ${c.id === data.currentChildId ? "selected" : ""}>
-          ${c.name} (${c.age})
-        </option>`).join("")}
-    </select>
-  `;
-}
-
-function therapistSelector() {
-  return `
-    <select onchange="changeTherapist(this.value)">
-      ${data.speechTherapists.map(t =>
-        `<option value="${t.id}" ${t.id === data.currentTherapistId ? "selected" : ""}>
-          ${t.name}
-        </option>`).join("")}
-    </select>
-  `;
-}
-
-function changeChild(id) {
-  data.currentChildId = Number(id);
-  save();
-  showSpeech();
-}
-
-function changeTherapist(id) {
-  data.currentTherapistId = Number(id);
-  // После смены логопеда переключаемся на первого ребенка этого логопеда (если есть)
-  const children = data.children.filter(c => c.therapistId === data.currentTherapistId);
-  data.currentChildId = children.length > 0 ? children[0].id : null;
-  save();
-  showSpeech();
-}
-
-/* РОДИТЕЛЬ */
-function showParent() {
-  hideAll();
-  const c = getCurrentChild();
-  const p = document.getElementById("parent");
-
-  if (!c) {
-    p.innerHTML = `<p>Выберите ребёнка в меню родителя.</p><button class="role-btn" onclick="back()">Назад</button>`;
-    p.classList.remove("hidden");
-    return;
-  }
-
-  p.innerHTML = `
-    ${childSelector()}
-    <h2>${c.name} (${c.age} года)</h2>
-    <p><b>Комментарий логопеда:</b><br>${c.comment || "—"}</p>
-    <div class="progress"><div style="width:${progress(c)}%"></div></div>
+  const c=currentChild();
+  const p=document.getElementById("parent");
+  const progressPercent=c.tasks.length ? c.tasks.filter(t=>t.done).length/c.tasks.length*100 :0;
+  p.innerHTML=childSelector()+`
+    <h2>${c.name} (${c.age})</h2>
+    <p><b>Комментарий:</b> ${c.comment||"—"}</p>
+    <div class="progress"><div style="width:${progressPercent}%"></div></div>
+    <p>Остаток занятий: ${c.totalLessons - c.attendance.length}</p>
     <h3>Задания</h3>
-  `;
-
-  c.tasks.forEach(t => {
-    p.innerHTML += `
-      <div class="card">
-        <label>
-          <input type="checkbox" ${t.done ? "checked" : ""}
-            onchange="toggle(${t.id})">
-          ${t.text}
-        </label>
-      </div>`;
-  });
-
-  p.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
+    ${c.tasks.map(t=>`<div><label><input type="checkbox" ${t.done?"checked":""} onchange="toggle(${t.id})">${t.text}</label></div>`).join("")}
+    <button class="role-btn" onclick="back()">Назад</button>`;
   p.classList.remove("hidden");
 }
+function toggle(id){const c=currentChild();const t=c.tasks.find(x=>x.id===id);t.done=!t.done;save();showParent();}
 
-function toggle(id) {
-  const c = getCurrentChild();
-  if (!c) return;
-  const t = c.tasks.find(x => x.id === id);
-  if (t) t.done = !t.done;
-  save();
-  showParent();
+// ======== Логопед ========
+function therapistSelector(){
+  return `<select onchange="changeTherapist(this.value)">
+    ${data.therapists.map(t=>`<option value="${t.id}" ${t.id===data.currentTherapistId?"selected":""}>${t.name}</option>`).join("")}
+  </select>`;
 }
+function changeTherapist(id){data.currentTherapistId=Number(id);save();showSpeech();}
+function updateComment(childId,val){const c=data.children.find(c=>c.id===childId);if(c){c.comment=val;save();}}
+function addTask(childId){const text=document.getElementById(`taskText${childId}`).value;if(!text)return;const c=data.children.find(c=>c.id===childId);c.tasks.push({id:Date.now(),text,done:false});save();showSpeech();}
+function markAttendance(childId){const c=data.children.find(c=>c.id===childId);const today=new Date().toDateString();if(c.attendance.includes(today)){c.attendance=c.attendance.filter(d=>d!==today);}else{c.attendance.push(today);}save();showSpeech();}
+function updateScheduleTime(childId,time){const c=data.children.find(c=>c.id===childId);if(c){c.scheduleTime=time;save();}}
 
-function progress(c) {
-  if (!c.tasks.length) return 0;
-  return c.tasks.filter(t => t.done).length / c.tasks.length * 100;
-}
-
-/* ЛОГОПЕД */
-function showSpeech() {
+function showSpeech(){
   hideAll();
+  const s=document.getElementById("speech");
+  s.innerHTML="";
+  const therapist=getCurrentTherapist();
+  s.innerHTML+=therapistSelector();
 
-  const s = document.getElementById("speech");
-  const therapist = getCurrentTherapist();
+  const children=data.children.filter(c=>c.therapistId===data.currentTherapistId);
+  s.innerHTML+="<h3>Расписание на сегодня</h3>";
+  s.innerHTML+="<table class='schedule-table'><tr><th>Время</th><th>Ребенок</th><th>Остаток занятий</th></tr>";
+  const defaultTimes=["09:00","10:00","11:00","12:00","13:00","14:00"];
+  children.forEach((child,i)=>{if(!child.scheduleTime)child.scheduleTime=defaultTimes[i%defaultTimes.length];
+    s.innerHTML+=`<tr><td><select onchange="updateScheduleTime(${child.id}, this.value)">${defaultTimes.map(t=>`<option value="${t}" ${t===child.scheduleTime?"selected":""}>${t}</option>`).join("")}</select></td><td>${child.name}</td><td>${child.totalLessons - child.attendance.length}</td></tr>`});
+  s.innerHTML+="</table><br>";
 
-  if (!therapist) {
-    s.innerHTML = `<p>Выберите логопеда.</p><button class="role-btn" onclick="back()">Назад</button>`;
-    s.classList.remove("hidden");
-    return;
-  }
-
-  const c = getCurrentChild();
-
-  s.innerHTML = `
-    ${therapistSelector()}
-    ${childSelector()}
-    <h2>Логопед: ${therapist.name}</h2>
-    <div class="card">
-      <b>${c ? c.name : "Нет выбранного ребёнка"}</b><br>
-      <textarea placeholder="Комментарий родителю" oninput="updateComment(this.value)">${c ? c.comment : ""}</textarea>
-
-      <h4>Новое задание</h4>
-      <input id="taskText" placeholder="Введите задание">
-      <button class="role-btn" onclick="addTask()">Добавить</button>
-    </div>
-    <button class="role-btn" onclick="back()">Назад</button>
-  `;
+  children.forEach(c=>{
+    s.innerHTML+=`
+      <div class="card">
+        <div class="flex"><img class="avatar" src="${c.avatar}" alt="Аватар"><b>${c.name} (${c.age})</b> <span class="float-right">Остаток занятий: ${c.totalLessons - c.attendance.length}</span></div>
+        <textarea placeholder="Комментарий родителю" oninput="updateComment(${c.id}, this.value)">${c.comment}</textarea>
+        <h4>Новое задание</h4>
+        <input id="taskText${c.id}" placeholder="Введите задание">
+        <button class="role-btn" onclick="addTask(${c.id})">Добавить</button>
+        <h4>Задания</h4>
+        ${c.tasks.map(t=>`<div>${t.done?"✅":"❌"} ${t.text}</div>`).join("")}
+        <h4>Посещаемость</h4>
+        <span class="attendance ${c.attendance.includes(new Date().toDateString())?"attended":""}" onclick="markAttendance(${c.id})">
+          ${c.attendance.includes(new Date().toDateString())?"✅ Пришел":"❌ Не пришел"}
+        </span>
+      </div>`;
+  });
+  s.innerHTML+="<button class='role-btn' onclick='back()'>Назад</button>";
   s.classList.remove("hidden");
 }
 
-function updateComment(value) {
-  const c = getCurrentChild();
-  if (!c) return;
-  c.comment = value;
-  save();
-}
-
-function addTask() {
-  const text = document.getElementById("taskText").value.trim();
-  if (!text) return;
-  const c = getCurrentChild();
-  if (!c) return;
-  c.tasks.push({ id: Date.now(), text, done: false });
-  save();
-  showSpeech();
-}
-
-/* АДМИН */
-function showAdmin() {
+// ======== Админ ========
+function showAdmin(){
   hideAll();
-  const a = document.getElementById("admin");
-  a.innerHTML = `
-    <h2>Администратор</h2>
-    <div class="card">👶 Детей: ${data.children.length}</div>
-    <div class="card">👩‍⚕️ Логопедов: ${data.speechTherapists.length}</div>
-    <div class="card">Центр работает стабильно ✅</div>
-    <button class="role-btn" onclick="back()">Назад</button>
-  `;
+  const a=document.getElementById("admin");
+  a.innerHTML="<h2>Администратор</h2>";
+  data.children.forEach(c=>{
+    const therapist=data.therapists.find(t=>t.id===c.therapistId);
+    const progressPercent=c.tasks.length ? c.tasks.filter(t=>t.done).length/c.tasks.length*100 :0;
+    a.innerHTML+=`
+      <div class="card">
+        <div class="flex"><img class="avatar" src="${c.avatar}" alt="Аватар"><b>${c.name} (${c.age})</b> - логопед: ${therapist?therapist.name:"—"} <span class="float-right">Остаток занятий: ${c.totalLessons - c.attendance.length}</span></div>
+        <p><b>Комментарий:</b> ${c.comment||"—"}</p>
+        <div class="progress"><div style="width:${progressPercent}%"></div></div>
+        <h4>Задания</h4>
+        ${c.tasks.map(t=>`<div>${t.done?"✅":"❌"} ${t.text}</div>`).join("")}
+        <h4>Посещаемость</h4>
+        ${c.attendance.length>0?c.attendance.join(", "):"—"}
+      </div>`;
+  });
+  a.innerHTML+="<button class='role-btn' onclick='back()'>Назад</button>";
   a.classList.remove("hidden");
 }
 
 save();
 </script>
-
 </body>
 </html>
