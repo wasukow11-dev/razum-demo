@@ -24,10 +24,7 @@ body {
   color: #4f46e5;
 }
 
-.sub {
-  color: #555;
-  font-size: 14px;
-}
+.sub { color:#555; font-size:14px; }
 
 .contacts {
   font-size: 13px;
@@ -51,6 +48,7 @@ body {
   padding: 16px;
   margin-bottom: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  cursor: pointer;
 }
 
 .progress {
@@ -74,7 +72,7 @@ body {
   margin-top: 6px;
 }
 
-.hidden { display: none; }
+.hidden { display:none; }
 </style>
 </head>
 
@@ -90,100 +88,85 @@ body {
 </div>
 
 <div id="roles">
-  <button class="role-btn" onclick="showParent()">Я родитель</button>
-  <button class="role-btn" onclick="showSpeech()">Я логопед</button>
+  <button class="role-btn" onclick="showList()">Я родитель</button>
+  <button class="role-btn" onclick="showList()">Я логопед</button>
   <button class="role-btn" onclick="showAdmin()">Я администратор</button>
 </div>
 
-<section id="parent" class="hidden"></section>
-<section id="speech" class="hidden"></section>
+<section id="list" class="hidden"></section>
+<section id="child" class="hidden"></section>
 <section id="admin" class="hidden"></section>
 
 <script>
-const data = {
-  logopedists: {
-    "Васюкова Анастасия Александровна": [
-      { name: "Фёдор", age: 4, stars: 4, level: 2 },
-      { name: "Артём", age: 5, stars: 3, level: 2 },
-      { name: "Мирослава", age: 6, stars: 5, level: 3 }
-    ],
-    "Прокопенко Светлана Геннадьевна": [
-      { name: "Максим", age: 5, stars: 2, level: 1 },
-      { name: "Давид", age: 4, stars: 3, level: 2 }
-    ],
-    "Сафронова Наталья Николаевна": [
-      { name: "Майя", age: 3, stars: 1, level: 1 }
-    ]
-  }
-};
+const children = [
+  // Васюкова А.А.
+  "Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита",
+  "Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша",
+  "Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"
+].map((n,i)=>({id:i+1,name:n,age:3+i%5,stars:2+i%4,level:1+i%3,speech:"Васюкова А.А."}))
+.concat(
+  // Прокопенко С.Г.
+  ["Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"]
+  .map((n,i)=>({id:100+i,name:n,age:3+i%4,stars:1+i%3,level:1+i%2,speech:"Прокопенко С.Г."}))
+)
+.concat(
+  [{id:200,name:"Майя",age:3,stars:1,level:1,speech:"Сафронова Н.Н."}]
+);
 
-function hideAll() {
-  document.querySelectorAll("section").forEach(s => s.classList.add("hidden"));
+function hideAll(){
+  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById("roles").classList.add("hidden");
 }
 
-function back() {
+function back(){
   hideAll();
   document.getElementById("roles").classList.remove("hidden");
 }
 
-function showParent() {
+function showList(){
   hideAll();
-  document.getElementById("roles").classList.add("hidden");
-  const el = document.getElementById("parent");
-  el.innerHTML = "<h2>Мои дети</h2>";
-
-  Object.values(data.logopedists).flat().forEach(child => {
-    el.innerHTML += `
-      <div class="card">
-        <b>${child.name}</b> (${child.age} лет)<br>
-        ⭐ Звёзды: ${child.stars}<br>
-        🏆 Уровень: ${child.level}
-        <div class="progress">
-          <div style="width:${child.stars * 20}%"></div>
-        </div>
-        <div class="badge">🎯 В процессе обучения</div>
-      </div>
-    `;
+  const el=document.getElementById("list");
+  el.innerHTML="<h2>Дети центра</h2>";
+  children.forEach(c=>{
+    el.innerHTML+=`
+      <div class="card" onclick="openChild(${c.id})">
+        <b>${c.name}</b> (${c.age} лет)<br>
+        ⭐ ${c.stars} | 🏆 ${c.level}
+      </div>`;
   });
-
-  el.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
+  el.innerHTML+=`<button class="role-btn" onclick="back()">Назад</button>`;
   el.classList.remove("hidden");
 }
 
-function showSpeech() {
+function openChild(id){
   hideAll();
-  document.getElementById("roles").classList.add("hidden");
-  const el = document.getElementById("speech");
-  el.innerHTML = "<h2>Логопеды</h2>";
-
-  Object.entries(data.logopedists).forEach(([name, kids]) => {
-    el.innerHTML += `
-      <div class="card">
-        <b>${name}</b><br>
-        👶 Детей: ${kids.length}
+  const c=children.find(x=>x.id===id);
+  const el=document.getElementById("child");
+  el.innerHTML=`
+    <h2>${c.name}</h2>
+    <div class="card">
+      Возраст: ${c.age} лет<br>
+      Логопед: ${c.speech}<br><br>
+      ⭐ Звёзды: ${c.stars}<br>
+      🏆 Уровень: ${c.level}
+      <div class="progress">
+        <div style="width:${c.stars*20}%"></div>
       </div>
-    `;
-  });
-
-  el.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
-  el.classList.remove("hidden");
-}
-
-function showAdmin() {
-  hideAll();
-  document.getElementById("roles").classList.add("hidden");
-  const el = document.getElementById("admin");
-
-  let totalKids = 0;
-  Object.values(data.logopedists).forEach(k => totalKids += k.length);
-
-  el.innerHTML = `
-    <h2>Администратор</h2>
-    <div class="card">👩‍⚕️ Логопедов: ${Object.keys(data.logopedists).length}</div>
-    <div class="card">👶 Детей: ${totalKids}</div>
-    <div class="card">📊 Система работает стабильно</div>
-    <button class="role-btn" onclick="back()">Назад</button>
+      <div class="badge">🎯 Индивидуальный маршрут</div>
+    </div>
+    <button class="role-btn" onclick="showList()">Назад к списку</button>
   `;
+  el.classList.remove("hidden");
+}
+
+function showAdmin(){
+  hideAll();
+  const el=document.getElementById("admin");
+  el.innerHTML=`
+    <h2>Администратор</h2>
+    <div class="card">👶 Всего детей: ${children.length}</div>
+    <div class="card">👩‍⚕️ Логопедов: 3</div>
+    <button class="role-btn" onclick="back()">Назад</button>`;
   el.classList.remove("hidden");
 }
 </script>
