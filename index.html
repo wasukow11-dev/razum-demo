@@ -1,158 +1,165 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>РАЗУМ — демо</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#fceabb,#f8b500);
-}
-.app {
-  max-width: 480px;
-  margin: auto;
+  background: linear-gradient(180deg,#eef2ff,#ffffff);
+  margin: 0;
   padding: 16px;
 }
-h1 {
-  text-align: center;
+
+h1 { margin-top: 0; }
+
+.role-btn {
+  padding: 12px;
+  margin: 6px 0;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  background: #6366f1;
+  color: #fff;
 }
+
 .card {
   background: #fff;
   border-radius: 16px;
   padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-button {
-  border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: #6c63ff;
-  color: #fff;
-  font-size: 14px;
-  margin: 4px 0;
-  width: 100%;
-}
-button.secondary {
-  background: #00b894;
-}
+
 .progress {
-  background: #eee;
+  background: #e5e7eb;
   border-radius: 10px;
   overflow: hidden;
+  margin-top: 6px;
 }
 .progress div {
-  height: 12px;
-  background: #6c63ff;
+  background: #22c55e;
+  height: 10px;
 }
+
 .badge {
   display: inline-block;
-  background: gold;
-  padding: 6px 10px;
-  border-radius: 12px;
-  margin: 4px 0;
-  font-size: 12px;
-}
-select {
-  width: 100%;
-  padding: 10px;
+  background: #fde68a;
+  padding: 4px 8px;
   border-radius: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 12px;
+  font-size: 12px;
+  margin-right: 4px;
 }
-.small {
-  font-size: 13px;
-  color: #555;
-}
+
+.hidden { display: none; }
 </style>
 </head>
 
 <body>
-<div class="app">
-  <h1>🧠 РАЗУМ</h1>
-  <p style="text-align:center">Логопедический центр · Петергоф</p>
+
+<h1>РАЗУМ — демо</h1>
+<p>Логопедический центр • Петергоф</p>
+
+<div id="roles">
+  <button class="role-btn" onclick="showParent()">Я родитель</button>
+  <button class="role-btn" onclick="showSpeech()">Я логопед</button>
+  <button class="role-btn" onclick="showAdmin()">Я администратор</button>
+</div>
+
+<!-- РОДИТЕЛЬ -->
+<div id="parent" class="hidden">
+  <h2>Мой ребёнок (4 года)</h2>
 
   <div class="card">
-    <strong>Выберите роль</strong>
-    <select id="role" onchange="render()">
-      <option value="parent">Родитель</option>
-      <option value="logoped1">Логопед — Васюкова А.А.</option>
-      <option value="logoped2">Логопед — Прокопенко С.Г.</option>
-      <option value="logoped3">Логопед — Сафронова Н.Н.</option>
-      <option value="admin">Администратор</option>
-    </select>
+    <b>Фёдор</b><br>
+    Возраст: 4 года<br>
+    Цель: звук «Р»<br>
+    Уровень: 3 ⭐⭐⭐<br>
+
+    <div class="progress">
+      <div style="width:70%"></div>
+    </div>
+
+    <p>
+      <span class="badge">🏆 Молодец</span>
+      <span class="badge">🔥 5 дней подряд</span>
+    </p>
   </div>
 
-  <div id="content"></div>
+  <button class="role-btn" onclick="back()">Назад</button>
+</div>
+
+<!-- ЛОГОПЕД -->
+<div id="speech" class="hidden">
+  <h2>Логопед: Васюкова А.А.</h2>
+
+  <div class="card">
+    <b>Артём (5 лет)</b><br>
+    Задание: слоги «РА–РО»<br>
+    Прогресс: 60%
+    <div class="progress"><div style="width:60%"></div></div>
+  </div>
+
+  <div class="card">
+    <b>Мирослава (6 лет)</b><br>
+    Задание: автоматизация «С»<br>
+    Прогресс: 85%
+    <div class="progress"><div style="width:85%"></div></div>
+  </div>
+
+  <button class="role-btn" onclick="back()">Назад</button>
+</div>
+
+<!-- АДМИНИСТРАТОР -->
+<div id="admin" class="hidden">
+  <h2>Администратор</h2>
+
+  <div class="card">
+    👩‍⚕️ Логопеды: 3<br>
+    👶 Дети: 40<br>
+    📈 Средний прогресс: 72%
+  </div>
+
+  <div class="card">
+    Центр работает стабильно ✔️
+  </div>
+
+  <button class="role-btn" onclick="back()">Назад</button>
 </div>
 
 <script>
-const data = {
-  logopeds: {
-    logoped1: {
-      name: "Васюкова Анастасия Александровна",
-      kids: ["Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"]
-    },
-    logoped2: {
-      name: "Прокопенко Светлана Геннадьевна",
-      kids: ["Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"]
-    },
-    logoped3: {
-      name: "Сафронова Наталья Николаевна",
-      kids: ["Майя"]
-    }
-  }
-};
-
-function kidCard(name) {
-  const progress = Math.floor(Math.random()*40)+40;
-  return `
-  <div class="card">
-    <strong>👶 ${name}</strong>
-    <p class="small">Возраст: 3–7 лет</p>
-    <p>🎯 Цель: развитие звуков и речи</p>
-
-    <div class="progress">
-      <div style="width:${progress}%"></div>
-    </div>
-    <p>${progress}% выполнено</p>
-
-    <div class="badge">⭐ Уровень: Молодец</div>
-
-    <p><strong>Задание-квест:</strong><br>
-    🐸 Произнеси «РА-РО-РУ» как лягушка</p>
-
-    <button class="secondary">✅ Выполнено</button>
-    <button>💬 Комментарий</button>
-  </div>`;
+function hideAll() {
+  document.getElementById("roles").classList.add("hidden");
+  document.getElementById("parent").classList.add("hidden");
+  document.getElementById("speech").classList.add("hidden");
+  document.getElementById("admin").classList.add("hidden");
 }
 
-function render() {
-  const role = document.getElementById("role").value;
-  const c = document.getElementById("content");
-  c.innerHTML = "";
-
-  if (role === "parent") {
-    c.innerHTML = kidCard("Фёдор");
-  }
-
-  if (role.startsWith("logoped")) {
-    const l = data.logopeds[role];
-    c.innerHTML += `<div class="card"><strong>${l.name}</strong></div>`;
-    l.kids.forEach(k => c.innerHTML += kidCard(k));
-  }
-
-  if (role === "admin") {
-    c.innerHTML += `<div class="card"><strong>Администратор</strong><br>Васюков Юрий Сергеевич</div>`;
-    Object.values(data.logopeds).forEach(l => {
-      c.innerHTML += `<div class="card"><strong>${l.name}</strong><br>Детей: ${l.kids.length}</div>`;
-    });
-  }
+function showParent() {
+  hideAll();
+  document.getElementById("parent").classList.remove("hidden");
 }
 
-render();
+function showSpeech() {
+  hideAll();
+  document.getElementById("speech").classList.remove("hidden");
+}
+
+function showAdmin() {
+  hideAll();
+  document.getElementById("admin").classList.remove("hidden");
+}
+
+function back() {
+  document.getElementById("roles").classList.remove("hidden");
+  document.getElementById("parent").classList.add("hidden");
+  document.getElementById("speech").classList.add("hidden");
+  document.getElementById("admin").classList.add("hidden");
+}
 </script>
+
 </body>
 </html>
