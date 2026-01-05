@@ -9,10 +9,12 @@
 :root{
   --primary:#6366f1;
   --accent:#22c55e;
-  --bg:#0f172a;
-  --card:rgba(30,41,59,.85);
-  --text:#e5e7eb;
+  --bg:#020617;
+  --card:#020617ee;
+  --text:#f8fafc;
   --muted:#94a3b8;
+  --back:#334155;
+  --back-text:#e5e7eb;
 }
 
 body{
@@ -20,8 +22,8 @@ body{
   padding:16px;
   font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
   background:
-    radial-gradient(1200px 600px at 10% -10%, #1e1b4b, transparent),
-    radial-gradient(1200px 600px at 90% 10%, #312e81, transparent),
+    radial-gradient(1000px 500px at 20% -10%, #0f172a, transparent),
+    radial-gradient(800px 400px at 90% 10%, #020617, transparent),
     var(--bg);
   color:var(--text);
 }
@@ -41,11 +43,16 @@ button{
   color:#fff;
   font-size:16px;
   cursor:pointer;
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
+  box-shadow:0 10px 24px rgba(0,0,0,.6);
 }
 
 button:hover{
   transform:translateY(-1px);
+}
+
+.back-btn{
+  background:linear-gradient(135deg,var(--back),#475569);
+  color:var(--back-text);
 }
 
 .card{
@@ -54,8 +61,8 @@ button:hover{
   border-radius:22px;
   padding:18px;
   margin-bottom:14px;
-  box-shadow:0 20px 40px rgba(0,0,0,.45);
-  border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 24px 48px rgba(0,0,0,.7);
+  border:1px solid rgba(255,255,255,.06);
 }
 
 .progress{
@@ -138,7 +145,7 @@ p{
 <div id="screen" class="hidden"></div>
 
 <script>
-/* ================= ДАННЫЕ ================= */
+/* ВСЯ ЛОГИКА БЕЗ ИЗМЕНЕНИЙ */
 const PRICE = 16000;
 
 const data = {
@@ -157,7 +164,6 @@ const data = {
 
 const store = JSON.parse(localStorage.getItem("razumStore")) || {};
 
-/* ================= УТИЛИТЫ ================= */
 function screen(){
   const s=document.getElementById("screen");
   s.classList.remove("hidden");
@@ -172,14 +178,13 @@ function save(){
   localStorage.setItem("razumStore",JSON.stringify(store));
 }
 
-/* ================= РОДИТЕЛЬ ================= */
 function showParent(){
   const s=screen();
   s.innerHTML="<h2>Выберите логопеда</h2>";
   Object.keys(data).forEach(l=>{
     s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
   });
-  s.innerHTML+=`<button onclick="back()">Назад</button>`;
+  s.innerHTML+=`<button class="back-btn" onclick="back()">Назад</button>`;
 }
 
 function parentKids(log){
@@ -188,19 +193,17 @@ function parentKids(log){
   data[log].forEach(k=>{
     s.innerHTML+=`<button onclick="childCard('${k}','${log}')">${k}</button>`;
   });
-  s.innerHTML+=`<button onclick="showParent()">Назад</button>`;
+  s.innerHTML+=`<button class="back-btn" onclick="showParent()">Назад</button>`;
 }
 
-/* ================= КАРТОЧКА РЕБЁНКА ================= */
 function childCard(name,log){
   if(!store[name]){
     store[name]={
-      name,
-      log,
+      name,log,
       age:3+Math.floor(Math.random()*4),
       level:1,
       lessons:8,
-      comment:"Отличная концентрация на занятиях, заметен прогресс.",
+      comment:"Отмечается стабильный прогресс, хорошая мотивация.",
       tasks:[
         {id:1,text:"Произнеси 10 слов с нужным звуком",done:false},
         {id:2,text:"Повтори упражнение перед зеркалом",done:false},
@@ -216,13 +219,11 @@ function childCard(name,log){
   s.innerHTML=`
     <h2>${c.name} (${c.age} лет)</h2>
     <div class="card">
-      👩‍⚕️ Логопед: ${c.log}<br>
+      👩‍⚕️ ${c.log}<br>
       🎟 Осталось занятий: ${c.lessons}<br>
       ⭐ Уровень: ${c.level}
       <div class="progress"><div style="width:${done/3*100}%"></div></div>
-
       <p><b style="color:#fff">Комментарий логопеда:</b><br>${c.comment}</p>
-
       <h3>🎯 Задания</h3>
       ${c.tasks.map(t=>`
         <div class="task ${t.done?"done":""}">
@@ -230,8 +231,7 @@ function childCard(name,log){
           ${t.done?"✔️":"<button class='small' onclick=\"doneTask('${name}',${t.id})\">Я выполнил</button>"}
         </div>`).join("")}
     </div>
-
-    <button onclick="parentKids('${log}')">Назад</button>
+    <button class="back-btn" onclick="parentKids('${log}')">Назад</button>
   `;
 }
 
@@ -246,37 +246,31 @@ function doneTask(name,id){
   childCard(c.name,c.log);
 }
 
-/* ================= ЛОГОПЕД ================= */
 function showSpeech(){
   const s=screen();
   s.innerHTML="<h2>Логопеды</h2>";
   Object.keys(data).forEach(l=>{
     s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
   });
-  s.innerHTML+=`<button onclick="back()">Назад</button>`;
+  s.innerHTML+=`<button class="back-btn" onclick="back()">Назад</button>`;
 }
 
-/* ================= АДМИН ================= */
 function showAdmin(){
   const kids=Object.values(data).flat().length;
   const s=screen();
   s.innerHTML=`
     <h2>Администратор</h2>
-
     <div class="card">
       👩‍⚕️ Логопедов: ${Object.keys(data).length}<br>
       👶 Детей: ${kids}
     </div>
-
     <div class="card">
       <b style="color:#fff">Калькулятор прибыли</b><br><br>
       Абонемент: 8 занятий = 16 000 ₽<br><br>
-      <label>Количество детей</label>
       <input type="number" value="${kids}" id="calcKids" oninput="calc()">
-      <p id="sum" style="margin-top:10px;font-weight:bold"></p>
+      <p id="sum"></p>
     </div>
-
-    <button onclick="back()">Назад</button>
+    <button class="back-btn" onclick="back()">Назад</button>
   `;
   calc();
 }
