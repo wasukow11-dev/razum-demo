@@ -14,7 +14,6 @@
   --text:#f8fafc;
   --muted:#94a3b8;
   --back:#334155;
-  --back-text:#e5e7eb;
 }
 
 body{
@@ -28,10 +27,7 @@ body{
   color:var(--text);
 }
 
-h1,h2,h3{
-  margin:8px 0;
-  font-weight:600;
-}
+h1,h2,h3{margin:8px 0}
 
 button{
   width:100%;
@@ -42,34 +38,24 @@ button{
   background:linear-gradient(135deg,var(--primary),#818cf8);
   color:#fff;
   font-size:16px;
-  cursor:pointer;
-  box-shadow:0 10px 24px rgba(0,0,0,.6);
-}
-
-button:hover{
-  transform:translateY(-1px);
 }
 
 .back-btn{
   background:linear-gradient(135deg,var(--back),#475569);
-  color:var(--back-text);
 }
 
 .card{
   background:var(--card);
-  backdrop-filter:blur(10px);
   border-radius:22px;
   padding:18px;
   margin-bottom:14px;
-  box-shadow:0 24px 48px rgba(0,0,0,.7);
-  border:1px solid rgba(255,255,255,.06);
+  box-shadow:0 20px 40px rgba(0,0,0,.6);
 }
 
 .progress{
   background:#020617;
   border-radius:10px;
   overflow:hidden;
-  margin:8px 0;
 }
 .progress div{
   height:10px;
@@ -80,8 +66,7 @@ button:hover{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top:10px;
-  font-size:14px;
+  margin:8px 0;
 }
 .task.done{
   opacity:.5;
@@ -96,23 +81,13 @@ button:hover{
   font-size:13px;
 }
 
-input{
+textarea{
   width:100%;
-  padding:12px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.08);
+  padding:10px;
+  border-radius:12px;
   background:#020617;
-  color:var(--text);
-  margin-top:6px;
-}
-
-input::placeholder{
-  color:var(--muted);
-}
-
-p{
-  color:var(--muted);
-  line-height:1.5;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.1);
 }
 
 .hidden{display:none}
@@ -123,162 +98,174 @@ p{
 
 <h1>РАЗУМ</h1>
 
+<!-- 🔒 БЛОК О ЦЕНТРЕ (ЗАКРЕПЛЁН) -->
 <div class="card">
-  <p>
-    <b style="color:#fff">Логопедический центр в Петергофе</b><br><br>
-    Мы помогаем детям развивать речь, уверенность и коммуникацию.
-    Работаем по индивидуальным программам, с прозрачным прогрессом
-    для родителей и удобной системой для специалистов.
-  </p>
-  <p>
-    📞 8 913 450-30-29<br>
-    📍 Санкт-Петербургский проспект 60Л, 2 этаж
-  </p>
+  <b style="font-size:18px">Логопедический центр «Разум»</b><br><br>
+
+  Мы — логопедический центр в Петергофе, который помогает детям
+  от 3 до 7 лет развивать речь, уверенность и коммуникативные навыки.<br><br>
+
+  Мы работаем по индивидуальным программам и делаем процесс
+  максимально прозрачным для родителей:
+  вы видите задания, прогресс и обратную связь специалиста.<br><br>
+
+  Это приложение — часть нашей системы:
+  дети вовлекаются через понятные задания,
+  родители понимают результат,
+  логопеды работают в удобном цифровом пространстве.<br><br>
+
+  📞 <b>8 913 450-30-29</b><br>
+  📍 Санкт-Петербургский проспект 60Л, 2 этаж
 </div>
 
 <div id="home">
-  <button onclick="showParent()"> Клиент</button>
-  <button onclick="showSpeech()"> Логопед</button>
-  <button onclick="showAdmin()"> Администратор</button>
+  <button onclick="showParent()">👨‍👩‍👧 Родитель</button>
+  <button onclick="showSpeech()">👩‍⚕️ Логопед</button>
+  <button onclick="showAdmin()">🛠 Администратор</button>
 </div>
 
 <div id="screen" class="hidden"></div>
 
 <script>
-/* ВСЯ ЛОГИКА БЕЗ ИЗМЕНЕНИЙ */
-const PRICE = 16000;
+const PRICE=16000;
 
-const data = {
-  "Васюкова А.А.": [
-    "Фёдор","Александр","Артём","Мирослава","Яся","Владимир",
-    "Маргарита","Алексей","Константин","Пётр","Елизавета",
-    "Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина",
-    "Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"
-  ],
-  "Прокопенко С.Г.": [
-    "Давид","Максим","Максим (2)","Максим (3)",
-    "Татьяна","Илья","Глеб","Фёдор П."
-  ],
-  "Сафронова Н.Н.": ["Майя"]
+const data={
+  "Васюкова А.А.":["Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"],
+  "Прокопенко С.Г.":["Давид","Максим","Максим (2)","Максим (3)","Татьяна","Илья","Глеб","Фёдор П."],
+  "Сафронова Н.Н.":["Майя"]
 };
 
-const store = JSON.parse(localStorage.getItem("razumStore")) || {};
+const store=JSON.parse(localStorage.getItem("razumStore"))||{};
 
 function screen(){
+  document.getElementById("home").classList.add("hidden");
   const s=document.getElementById("screen");
   s.classList.remove("hidden");
-  document.getElementById("home").classList.add("hidden");
   return s;
 }
 function back(){
   document.getElementById("screen").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
 }
-function save(){
-  localStorage.setItem("razumStore",JSON.stringify(store));
+function save(){localStorage.setItem("razumStore",JSON.stringify(store))}
+
+function initChild(name,log){
+  if(store[name])return;
+  store[name]={
+    name,log,
+    level:1,
+    lessons:8,
+    comment:"Отмечается положительная динамика.",
+    tasks:[
+      {id:1,text:"Произнеси слова с нужным звуком",status:"assigned"},
+      {id:2,text:"Упражнение перед зеркалом",status:"assigned"},
+      {id:3,text:"Игровая автоматизация",status:"assigned"}
+    ]
+  };
+  save();
 }
 
+/* ===== РОДИТЕЛЬ ===== */
 function showParent(){
   const s=screen();
-  s.innerHTML="<h2>Выберите специалиста</h2>";
-  Object.keys(data).forEach(l=>{
-    s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
-  });
+  s.innerHTML="<h2>Выберите логопеда</h2>";
+  Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`);
   s.innerHTML+=`<button class="back-btn" onclick="back()">Назад</button>`;
 }
-
 function parentKids(log){
   const s=screen();
   s.innerHTML=`<h2>${log}</h2>`;
-  data[log].forEach(k=>{
-    s.innerHTML+=`<button onclick="childCard('${k}','${log}')">${k}</button>`;
-  });
+  data[log].forEach(k=>s.innerHTML+=`<button onclick="childParent('${k}','${log}')">${k}</button>`);
   s.innerHTML+=`<button class="back-btn" onclick="showParent()">Назад</button>`;
 }
-
-function childCard(name,log){
-  if(!store[name]){
-    store[name]={
-      name,log,
-      age:3+Math.floor(Math.random()*4),
-      level:1,
-      lessons:8,
-      comment:"Отмечается стабильный прогресс, хорошая мотивация.",
-      tasks:[
-        {id:1,text:"Произнеси 10 слов с нужным звуком",done:false},
-        {id:2,text:"Повтори упражнение перед зеркалом",done:false},
-        {id:3,text:"Игровое задание на автоматизацию",done:false}
-      ]
-    };
-  }
-  save();
+function childParent(name,log){
+  initChild(name,log);
   const c=store[name];
-  const done=c.tasks.filter(t=>t.done).length;
   const s=screen();
-
   s.innerHTML=`
-    <h2>${c.name} (${c.age} лет)</h2>
+    <h2>${name}</h2>
     <div class="card">
-      👩‍⚕️ ${c.log}<br>
-      🎟 Осталось занятий: ${c.lessons}<br>
-      ⭐ Уровень: ${c.level}
-      <div class="progress"><div style="width:${done/3*100}%"></div></div>
-      <p><b style="color:#fff">Комментарий логопеда:</b><br>${c.comment}</p>
-      <h3>🎯 Задания</h3>
+      ⭐ Уровень ${c.level}<br>
+      🎟 Осталось занятий: ${c.lessons}<br><br>
       ${c.tasks.map(t=>`
-        <div class="task ${t.done?"done":""}">
+        <div class="task ${t.status==='done'?'done':''}">
           ${t.text}
-          ${t.done?"✔️":"<button class='small' onclick=\"doneTask('${name}',${t.id})\">Я выполнил</button>"}
+          ${
+            t.status==='assigned'
+              ? `<button class="small" onclick="request('${name}',${t.id})">Я выполнил</button>`
+              : t.status==='requested'
+                ? '⏳ На проверке'
+                : '✔️'
+          }
         </div>`).join("")}
+      <p><b>Комментарий логопеда:</b><br>${c.comment}</p>
     </div>
-    <button class="back-btn" onclick="parentKids('${log}')">Назад</button>
-  `;
+    <button class="back-btn" onclick="parentKids('${log}')">Назад</button>`;
+}
+function request(name,id){
+  const t=store[name].tasks.find(x=>x.id===id);
+  if(t.status==='assigned'){t.status='requested';save();}
+  childParent(name,store[name].log);
 }
 
-function doneTask(name,id){
-  const c=store[name];
-  const t=c.tasks.find(x=>x.id===id);
-  if(!t.done){
-    t.done=true;
-    if(c.tasks.every(x=>x.done)) c.level++;
-    save();
-  }
-  childCard(c.name,c.log);
-}
-
+/* ===== ЛОГОПЕД ===== */
 function showSpeech(){
   const s=screen();
   s.innerHTML="<h2>Логопеды</h2>";
-  Object.keys(data).forEach(l=>{
-    s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
-  });
+  Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="speechKids('${l}')">${l}</button>`);
   s.innerHTML+=`<button class="back-btn" onclick="back()">Назад</button>`;
 }
+function speechKids(log){
+  const s=screen();
+  s.innerHTML=`<h2>${log}</h2>`;
+  data[log].forEach(k=>s.innerHTML+=`<button onclick="childSpeech('${k}','${log}')">${k}</button>`);
+  s.innerHTML+=`<button class="back-btn" onclick="showSpeech()">Назад</button>`;
+}
+function childSpeech(name,log){
+  initChild(name,log);
+  const c=store[name];
+  const s=screen();
+  s.innerHTML=`
+    <h2>${name}</h2>
+    <div class="card">
+      ${c.tasks.map(t=>`
+        <div class="task">
+          ${t.text}
+          ${
+            t.status==='requested'
+              ? `<button class="small" onclick="approve('${name}',${t.id})">Подтвердить</button>`
+              : t.status==='done'
+                ? '✔️'
+                : '—'
+          }
+        </div>`).join("")}
+      <textarea onchange="comment('${name}',this.value)">${c.comment}</textarea>
+    </div>
+    <button class="back-btn" onclick="speechKids('${log}')">Назад</button>`;
+}
+function approve(name,id){
+  const c=store[name];
+  const t=c.tasks.find(x=>x.id===id);
+  if(t.status==='requested'){
+    t.status='done';
+    if(c.tasks.every(x=>x.status==='done')) c.level++;
+    save();
+  }
+  childSpeech(name,c.log);
+}
+function comment(name,val){store[name].comment=val;save()}
 
+/* ===== АДМИН ===== */
 function showAdmin(){
   const kids=Object.values(data).flat().length;
   const s=screen();
   s.innerHTML=`
     <h2>Администратор</h2>
     <div class="card">
-      👩‍⚕️ Логопедов: ${Object.keys(data).length}<br>
-      👶 Детей: ${kids}
+      👶 Детей: ${kids}<br>
+      💰 Доход в месяц: ${(kids*PRICE).toLocaleString()} ₽
     </div>
-    <div class="card">
-      <b style="color:#fff">Калькулятор прибыли</b><br><br>
-      Абонемент: 8 занятий = 16 000 ₽<br><br>
-      <input type="number" value="${kids}" id="calcKids" oninput="calc()">
-      <p id="sum"></p>
-    </div>
-    <button class="back-btn" onclick="back()">Назад</button>
-  `;
-  calc();
-}
-
-function calc(){
-  const k=document.getElementById("calcKids").value||0;
-  document.getElementById("sum").innerText=
-    "Доход в месяц: "+(k*PRICE).toLocaleString()+" ₽";
+    <button class="back-btn" onclick="back()">Назад</button>`;
 }
 </script>
 
