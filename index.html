@@ -5,44 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>РАЗУМ — логопедический центр</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(180deg,#fff8e6,#e0f7fa);
-  margin: 0; padding: 16px;
-}
+body { font-family: Arial, sans-serif; background: linear-gradient(180deg, #fff8e6, #e0f7fa); margin:0; padding:16px; }
 header { text-align:center; margin-bottom:16px; }
-.logo { max-width:140px; margin:0 auto 8px; display:block; }
-.role-btn {
-  width:100%; padding:12px; margin:6px 0; border:none;
-  border-radius:14px; font-size:16px; color:#fff; cursor:pointer; transition:.2s;
-}
+.logo { max-width:120px; margin:0 auto 8px; display:block; }
+.role-btn { width:100%; padding:12px; margin:6px 0; border:none; border-radius:12px; font-size:16px; color:#fff; cursor:pointer; }
 .role-btn:hover { opacity:0.9; }
-.card {
-  background:#fff; border-radius:16px; padding:16px;
-  margin-bottom:12px; box-shadow:0 6px 16px rgba(0,0,0,0.12);
-}
-.card:hover { transform: translateY(-2px); transition:.2s; }
-.progress { background:#e5e7eb; border-radius:10px; overflow:hidden; height:12px; margin-bottom:8px; }
-.progress div { background:#22c55e; height:12px; }
+.card { background:#fff; border-radius:12px; padding:16px; margin-bottom:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+.child-avatar { width:48px; height:48px; border-radius:50%; margin-right:12px; }
+.child-header { display:flex; align-items:center; }
+.progress { background:#e5e7eb; border-radius:10px; overflow:hidden; height:12px; margin:8px 0; }
+.progress div { background:#22c55e; height:12px; transition:0.3s; }
 .hidden { display:none; }
 textarea,input,select { width:100%; padding:8px; margin-top:6px; border-radius:8px; border:1px solid #ccc; }
-.child-avatar { width:50px; height:50px; border-radius:50%; object-fit:cover; margin-right:12px; vertical-align:middle; }
-.child-header { display:flex; align-items:center; margin-bottom:8px; }
-h2,h3,h4 { margin:6px 0; }
 </style>
 </head>
 <body>
+
 <header>
-  <img src="logo.png.jpg" class="logo">
+  <img src="logo.png" class="logo" alt="Логотип">
   <h1>РАЗУМ</h1>
   <p>Логопедический центр • Петергоф</p>
-  <p>📞 8 913 450-30-29<br>📍 Санкт-Петербургский проспект 60Л, 2 этаж</p>
+  <p>📞 8 913 450‑30‑29<br>📍 Санкт‑Петербургский пр., 60Л</p>
 </header>
 
 <div id="roles">
-  <button class="role-btn" style="background:#4a90e2" onclick="showParent()">Я родитель</button>
-  <button class="role-btn" style="background:#22c55e" onclick="showSpeech()">Я логопед</button>
-  <button class="role-btn" style="background:#f59e0b" onclick="showAdmin()">Я администратор</button>
+  <button id="btnParent" class="role-btn" style="background:#4a90e2">Я родитель</button>
+  <button id="btnSpeech" class="role-btn" style="background:#22c55e">Я логопед</button>
+  <button id="btnAdmin" class="role-btn" style="background:#f59e0b">Я администратор</button>
 </div>
 
 <div id="parent" class="hidden"></div>
@@ -50,196 +39,253 @@ h2,h3,h4 { margin:6px 0; }
 <div id="admin" class="hidden"></div>
 
 <script>
-// ====== ДЕМО-ДАННЫЕ ======
-const colors = ["#FFF0F5","#E6FFFA","#FFF8E6","#E6F0FF","#FFF5E6","#E6FFE6","#FFF0E6","#F0E6FF","#E6F7FF"];
-const data = JSON.parse(localStorage.getItem("razumData")) || {
-  currentChildId: 1,
+// ======== ДАННЫЕ (демо) ========
+const demo = {
   children: [
-    {id:1,name:"Фёдор",age:4,avatar:"https://i.pravatar.cc/50?img=1",tasks:[{id:1,text:"Произнести 10 слов со звуком Р",done:false}],comment:"",paid:8,attended:0},
+    {id:1,name:"Фёдор",age:4,avatar:"https://i.pravatar.cc/50?img=1",tasks:[{id:1,text:"Произнести 10 слов со звуком Р",done:false},{id:2,text:"Слоги РА‑РО‑РУ",done:false}],comment:"",paid:8,attended:0},
     {id:2,name:"Александр",age:5,avatar:"https://i.pravatar.cc/50?img=2",tasks:[],comment:"",paid:12,attended:3},
-    {id:3,name:"Артём",age:4,avatar:"https://i.pravatar.cc/50?img=3",tasks:[],comment:"",paid:4,attended:1},
-    {id:4,name:"Мирослава",age:6,avatar:"https://i.pravatar.cc/50?img=4",tasks:[],comment:"",paid:8,attended:2},
-    {id:5,name:"Яся",age:4,avatar:"https://i.pravatar.cc/50?img=5",tasks:[],comment:"",paid:12,attended:5},
-    {id:6,name:"Владимир",age:5,avatar:"https://i.pravatar.cc/50?img=6",tasks:[],comment:"",paid:8,attended:4},
-    {id:7,name:"Маргарита",age:6,avatar:"https://i.pravatar.cc/50?img=7",tasks:[],comment:"",paid:4,attended:2},
-    {id:8,name:"Алексей",age:7,avatar:"https://i.pravatar.cc/50?img=8",tasks:[],comment:"",paid:8,attended:1},
-    {id:9,name:"Константин",age:5,avatar:"https://i.pravatar.cc/50?img=9",tasks:[],comment:"",paid:12,attended:6},
-    {id:10,name:"Пётр",age:6,avatar:"https://i.pravatar.cc/50?img=10",tasks:[],comment:"",paid:4,attended:1},
-    {id:11,name:"Елизавета",age:4,avatar:"https://i.pravatar.cc/50?img=11",tasks:[],comment:"",paid:8,attended:3},
-    {id:12,name:"Алёна",age:5,avatar:"https://i.pravatar.cc/50?img=12",tasks:[],comment:"",paid:12,attended:5},
-    {id:13,name:"Мия",age:4,avatar:"https://i.pravatar.cc/50?img=13",tasks:[],comment:"",paid:4,attended:1},
-    {id:14,name:"Таир",age:6,avatar:"https://i.pravatar.cc/50?img=14",tasks:[],comment:"",paid:8,attended:2},
-    {id:15,name:"Стеша",age:5,avatar:"https://i.pravatar.cc/50?img=15",tasks:[],comment:"",paid:12,attended:6},
-    {id:16,name:"Леонид",age:4,avatar:"https://i.pravatar.cc/50?img=16",tasks:[],comment:"",paid:8,attended:3},
-    {id:17,name:"Савелий",age:5,avatar:"https://i.pravatar.cc/50?img=17",tasks:[],comment:"",paid:12,attended:5},
-    {id:18,name:"Арина",age:6,avatar:"https://i.pravatar.cc/50?img=18",tasks:[],comment:"",paid:4,attended:1},
-    {id:19,name:"Евгений",age:7,avatar:"https://i.pravatar.cc/50?img=19",tasks:[],comment:"",paid:8,attended:2},
-    {id:20,name:"Вадим",age:5,avatar:"https://i.pravatar.cc/50?img=20",tasks:[],comment:"",paid:12,attended:5},
-    {id:21,name:"Юлия",age:6,avatar:"https://i.pravatar.cc/50?img=21",tasks:[],comment:"",paid:8,attended:4},
-    {id:22,name:"Кирилл",age:5,avatar:"https://i.pravatar.cc/50?img=22",tasks:[],comment:"",paid:12,attended:6},
-    {id:23,name:"Зоя",age:4,avatar:"https://i.pravatar.cc/50?img=23",tasks:[],comment:"",paid:8,attended:3},
-    {id:24,name:"Михаил",age:6,avatar:"https://i.pravatar.cc/50?img=24",tasks:[],comment:"",paid:12,attended:5}
+    {id:3,name:"Артём",age:6,avatar:"https://i.pravatar.cc/50?img=3",tasks:[],comment:"",paid:4,attended:1},
+    {id:4,name:"Мирослава",age:4,avatar:"https://i.pravatar.cc/50?img=4",tasks:[],comment:"",paid:8,attended:2},
+    {id:5,name:"Яся",age:5,avatar:"https://i.pravatar.cc/50?img=5",tasks:[],comment:"",paid:12,attended:5}
   ],
-  teachers:[
-    {name:"Васюкова Анастасия Александровна", children:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]},
-    {name:"Прокопенко Светлана Геннадьевна", children:[1,2,3,6,7,8]},
-    {name:"Сафронова Наталья Николаевна", children:[13]}
-  ],
-  admin: {name:"Васюков Юрий Сергеевич"}
+  teachers: [
+    {id:1,name:"Васюкова Анастасия Александровна",children:[1,2,3]},
+    {id:2,name:"Прокопенко Светлана Геннадьевна",children:[2,4]},
+    {id:3,name:"Сафронова Наталья Николаевна",children:[5]}
+  ]
 };
 
-function save(){localStorage.setItem("razumData",JSON.stringify(data));}
-function currentChild(){return data.children.find(c=>c.id===data.currentChildId);}
+// Глобальный объект для state
+let data = JSON.parse(localStorage.getItem("razumData")) || demo;
+
+// Сохранение
+function save(){ localStorage.setItem("razumData", JSON.stringify(data)); }
+
+// Показывает DOM и скрывает остальные
 function hideAll(){["roles","parent","speech","admin"].forEach(id=>document.getElementById(id).classList.add("hidden"));}
-function back(){hideAll();document.getElementById("roles").classList.remove("hidden");}
+function showSection(id){ hideAll(); document.getElementById(id).classList.remove("hidden"); }
 
 // ====== РОДИТЕЛЬ ======
 function showParent(){
-  hideAll();
-  const parentDiv=document.getElementById("parent");
-  parentDiv.innerHTML="";
-  data.children.forEach((c,index)=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.style.background=colors[index%colors.length];
+  showSection("parent");
+  const parentDiv = document.getElementById("parent");
+  parentDiv.innerHTML = "";
 
-    const header=document.createElement("div");
-    header.className="child-header";
-    const avatar=document.createElement("img");
-    avatar.src=c.avatar;
-    avatar.className="child-avatar";
-    const h2=document.createElement("h2");
-    h2.innerText=`${c.name} (${c.age} года)`;
+  data.children.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const header = document.createElement("div");
+    header.className = "child-header";
+    const avatar = document.createElement("img");
+    avatar.className = "child-avatar";
+    avatar.src = c.avatar;
+    const name = document.createElement("h2");
+    name.innerText = `${c.name} (${c.age})`;
     header.appendChild(avatar);
-    header.appendChild(h2);
+    header.appendChild(name);
     card.appendChild(header);
 
-    const comment=document.createElement("p");
-    comment.innerHTML=`<b>Комментарий логопеда:</b><br>${c.comment || "—"}`;
+    const comment = document.createElement("p");
+    comment.innerHTML = `<b>Комментарий:</b> ${c.comment||"—"}`;
     card.appendChild(comment);
 
-    const prog=document.createElement("div");
-    prog.className="progress";
-    const progInner=document.createElement("div");
-    progInner.style.width=c.tasks.length?`${c.tasks.filter(t=>t.done).length/c.tasks.length*100}%`:"0%";
+    const prog = document.createElement("div");
+    prog.className = "progress";
+    const progInner = document.createElement("div");
+    progInner.style.width = c.tasks.length ? `${c.tasks.filter(t=>t.done).length/c.tasks.length*100}%` : "0%";
     prog.appendChild(progInner);
     card.appendChild(prog);
 
-    const taskTitle=document.createElement("h3");
-    taskTitle.innerText="Задания";
-    card.appendChild(taskTitle);
+    const tasksTitle = document.createElement("h3");
+    tasksTitle.innerText = "Задания";
+    card.appendChild(tasksTitle);
 
-    c.tasks.forEach(t=>{
-      const tDiv=document.createElement("div");
-      tDiv.className="card";
-      const label=document.createElement("label");
-      const checkbox=document.createElement("input");
-      checkbox.type="checkbox";
-      checkbox.checked=t.done;
-      checkbox.onchange=()=>{t.done=!t.done; save(); showParent();};
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(" "+t.text));
-      tDiv.appendChild(label);
+    c.tasks.forEach(t => {
+      const tDiv = document.createElement("div");
+      tDiv.innerText = `${t.done?"✅":"❌"} ${t.text}`;
       card.appendChild(tDiv);
     });
 
-    const attendance=document.createElement("p");
-    attendance.innerHTML=`<b>Оплачено занятий:</b> ${c.paid} • <b>Посещено:</b> ${c.attended} • <b>Остаток:</b> ${c.paid-c.attended}`;
+    const attendance = document.createElement("p");
+    attendance.innerHTML = `<b>Оплачено:</b> ${c.paid} • <b>Посещено:</b> ${c.attended} • <b>Остаток:</b> ${c.paid - c.attended}`;
     card.appendChild(attendance);
 
     parentDiv.appendChild(card);
   });
-  const backBtn=document.createElement("button");
+
+  const backBtn = document.createElement("button");
   backBtn.className="role-btn";
   backBtn.style.background="#4a90e2";
   backBtn.innerText="Назад";
-  backBtn.onclick=back;
+  backBtn.onclick = ()=>showSection("roles");
   parentDiv.appendChild(backBtn);
-  parentDiv.classList.remove("hidden");
 }
 
 // ====== ЛОГОПЕД ======
 function showSpeech(){
-  hideAll();
-  const speechDiv=document.getElementById("speech");
-  speechDiv.innerHTML="";
-  // Для демо показываем всех детей
-  data.children.forEach((c,index)=>{
-    const card=document.createElement("div");
-    card.className="card";
-    card.style.background=colors[index%colors.length];
+  showSection("speech");
+  const speechDiv = document.getElementById("speech");
+  speechDiv.innerHTML = "";
 
-    const header=document.createElement("div");
-    header.className="child-header";
-    const avatar=document.createElement("img");
-    avatar.src=c.avatar; avatar.className="child-avatar";
-    const h2=document.createElement("h2");
-    h2.innerText=`${c.name} (${c.age} года)`;
-    header.appendChild(avatar); header.appendChild(h2);
-    card.appendChild(header);
-
-    const commentLabel=document.createElement("p");
-    commentLabel.innerHTML="<b>Комментарий:</b>";
-    card.appendChild(commentLabel);
-
-    const textarea=document.createElement("textarea");
-    textarea.value=c.comment;
-    textarea.onchange=()=>{c.comment=textarea.value; save();};
-    card.appendChild(textarea);
-
-    const taskTitle=document.createElement("h4"); taskTitle.innerText="Новое задание"; card.appendChild(taskTitle);
-    const taskInput=document.createElement("input"); taskInput.placeholder="Введите задание"; card.appendChild(taskInput);
-    const addBtn=document.createElement("button"); addBtn.className="role-btn"; addBtn.style.background="#22c55e"; addBtn.innerText="Добавить";
-    addBtn.onclick=()=>{if(taskInput.value){c.tasks.push({id:Date.now(),text:taskInput.value,done:false}); save(); showSpeech();}};
-    card.appendChild(addBtn);
-
-    const attendBtn=document.createElement("button"); attendBtn.className="role-btn"; attendBtn.style.background="#22c55e"; attendBtn.innerText="Ребенок пришёл";
-    attendBtn.onclick=()=>{if(c.attended<c.paid){c.attended++; save(); showSpeech();}};
-    card.appendChild(attendBtn);
-
-    const attendance=document.createElement("p");
-    attendance.innerHTML=`Оплачено: ${c.paid} • Посещено: ${c.attended} • Остаток: ${c.paid-c.attended}`;
-    card.appendChild(attendance);
-
-    speechDiv.appendChild(card);
+  const sel = document.createElement("select");
+  data.teachers.forEach(t=>{
+    const opt = document.createElement("option");
+    opt.value = t.id;
+    opt.text = t.name;
+    sel.appendChild(opt);
   });
+  sel.onchange = () => renderTeacherChildren(sel.value);
+  speechDiv.appendChild(sel);
 
-  const backBtn=document.createElement("button"); backBtn.className="role-btn"; backBtn.style.background="#22c55e"; backBtn.innerText="Назад"; backBtn.onclick=back;
-  speechDiv.appendChild(backBtn); speechDiv.classList.remove("hidden");
+  function renderTeacherChildren(teacherId){
+    speechDiv.querySelectorAll(".child-card").forEach(e=>e.remove());
+
+    const teacher = data.teachers.find(t=>t.id == teacherId);
+    if(!teacher) return;
+
+    teacher.children.forEach(cid=>{
+      const c = data.children.find(ch=>ch.id===cid);
+      if(!c) return;
+
+      const card = document.createElement("div");
+      card.className = "card child-card";
+
+      const header = document.createElement("div");
+      header.className = "child-header";
+      const avatar = document.createElement("img");
+      avatar.src = c.avatar;
+      avatar.className = "child-avatar";
+      const name = document.createElement("h2");
+      name.innerText = `${c.name} (${c.age})`;
+      header.appendChild(avatar);
+      header.appendChild(name);
+      card.appendChild(header);
+
+      const commentLabel = document.createElement("p");
+      commentLabel.innerHTML = `<b>Комментарий:</b>`;
+      card.appendChild(commentLabel);
+
+      const ta = document.createElement("textarea");
+      ta.value = c.comment;
+      ta.onchange = ()=>{ c.comment = ta.value; save(); };
+      card.appendChild(ta);
+
+      const taskInput = document.createElement("input");
+      taskInput.placeholder = "Новое задание";
+      card.appendChild(taskInput);
+
+      const addBtn = document.createElement("button");
+      addBtn.className="role-btn";
+      addBtn.style.background="#22c55e";
+      addBtn.innerText = "Добавить задание";
+      addBtn.onclick = ()=>{
+        if(taskInput.value.trim()){ c.tasks.push({id:Date.now(),text:taskInput.value,done:false}); save(); renderTeacherChildren(teacherId); }
+      };
+      card.appendChild(addBtn);
+
+      const attendanceBtn = document.createElement("button");
+      attendanceBtn.className="role-btn";
+      attendanceBtn.style.background="#22c55e";
+      attendanceBtn.innerText = "Отметить посещение";
+      attendanceBtn.onclick = ()=>{
+        if(c.attended < c.paid){ c.attended++; save(); renderTeacherChildren(teacherId); }
+      };
+      card.appendChild(attendanceBtn);
+
+      const att = document.createElement("p");
+      att.innerHTML = `<b>Оплачено:</b> ${c.paid} • <b>Посещено:</b> ${c.attended} • <b>Остаток:</b> ${c.paid-c.attended}`;
+      card.appendChild(att);
+
+      const tasksTitle = document.createElement("h3");
+      tasksTitle.innerText="Задания";
+      card.appendChild(tasksTitle);
+
+      c.tasks.forEach(t=>{
+        const tLine = document.createElement("div");
+        const chk = document.createElement("input");
+        chk.type = "checkbox";
+        chk.checked = t.done;
+        chk.onchange = ()=>{ t.done = chk.checked; save(); renderTeacherChildren(teacherId); };
+        tLine.appendChild(chk);
+        tLine.appendChild(document.createTextNode(" "+t.text));
+        card.appendChild(tLine);
+      });
+
+      speechDiv.appendChild(card);
+    });
+
+    const backBtn=document.createElement("button");
+    backBtn.className="role-btn";
+    backBtn.style.background="#22c55e";
+    backBtn.innerText="Назад";
+    backBtn.onclick = ()=>showSection("roles");
+    speechDiv.appendChild(backBtn);
+  }
+
+  if(data.teachers.length) sel.value=data.teachers[0].id, sel.onchange();
 }
 
 // ====== АДМИН ======
 function showAdmin(){
-  hideAll();
-  const adminDiv=document.getElementById("admin");
-  adminDiv.innerHTML="";
-  data.children.forEach((c,index)=>{
-    const card=document.createElement("div"); card.className="card"; card.style.background=colors[index%colors.length];
+  showSection("admin");
+  const adminDiv = document.getElementById("admin");
+  adminDiv.innerHTML = "";
 
-    const header=document.createElement("div"); header.className="child-header";
-    const avatar=document.createElement("img"); avatar.src=c.avatar; avatar.className="child-avatar";
-    const h3=document.createElement("h3"); h3.innerText=`${c.name} (${c.age} года)`;
-    header.appendChild(avatar); header.appendChild(h3); card.appendChild(header);
+  data.children.forEach(c => {
+    const card = document.createElement("div");
+    card.className="card";
 
-    const comment=document.createElement("p"); comment.innerHTML=`<b>Комментарий:</b> ${c.comment || "—"}`; card.appendChild(comment);
+    const header = document.createElement("div");
+    header.className="child-header";
+    const avatar = document.createElement("img");
+    avatar.src = c.avatar;
+    avatar.className="child-avatar";
+    const h3 = document.createElement("h3");
+    h3.innerText = `${c.name} (${c.age})`;
+    header.appendChild(avatar);
+    header.appendChild(h3);
+    card.appendChild(header);
 
-    const taskTitle=document.createElement("h4"); taskTitle.innerText="Задания"; card.appendChild(taskTitle);
-    c.tasks.forEach(t=>{const tDiv=document.createElement("div"); tDiv.innerText=`${t.text} ${t.done?"✅":"❌"}`; card.appendChild(tDiv);});
+    const comment = document.createElement("p");
+    comment.innerHTML = `<b>Комментарий:</b> ${c.comment||"—"}`;
+    card.appendChild(comment);
 
-    const attendance=document.createElement("p"); attendance.innerHTML=`Оплачено: ${c.paid} • Посещено: ${c.attended} • Остаток: ${c.paid-c.attended}`;
-    card.appendChild(attendance);
+    const tasksTitle = document.createElement("h4");
+    tasksTitle.innerText = "Задания";
+    card.appendChild(tasksTitle);
+
+    c.tasks.forEach(t=>{
+      const div = document.createElement("div");
+      div.innerText = `${t.done?"✅":"❌"} ${t.text}`;
+      card.appendChild(div);
+    });
+
+    const att = document.createElement("p");
+    att.innerHTML = `<b>Оплачено:</b> ${c.paid} • <b>Посещено:</b> ${c.attended} • <b>Остаток:</b> ${c.paid-c.attended}`;
+    card.appendChild(att);
 
     adminDiv.appendChild(card);
   });
 
-  const infoCard=document.createElement("div"); infoCard.className="card"; infoCard.innerHTML=`👩‍⚕️ Логопедов: ${data.teachers.length}<br>Центр работает стабильно ✅`;
-  adminDiv.appendChild(infoCard);
+  const summary=document.createElement("div");
+  summary.className="card";
+  summary.innerHTML=`👩‍⚕️ Логопедов: ${data.teachers.length}<br>Детей: ${data.children.length}`;
+  adminDiv.appendChild(summary);
 
-  const backBtn=document.createElement("button"); backBtn.className="role-btn"; backBtn.style.background="#f59e0b"; backBtn.innerText="Назад"; backBtn.onclick=back;
-  adminDiv.appendChild(backBtn); adminDiv.classList.remove("hidden");
+  const backBtn=document.createElement("button");
+  backBtn.className="role-btn";
+  backBtn.style.background="#f59e0b";
+  backBtn.innerText="Назад";
+  backBtn.onclick = ()=>showSection("roles");
+  adminDiv.appendChild(backBtn);
 }
 
-save();
+// Event listeners
+document.getElementById("btnParent").onclick = showParent;
+document.getElementById("btnSpeech").onclick = showSpeech;
+document.getElementById("btnAdmin").onclick = showAdmin;
+
 </script>
 </body>
 </html>
