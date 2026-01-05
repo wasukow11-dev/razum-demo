@@ -13,23 +13,9 @@ body {
   padding: 16px;
 }
 
-h1 { margin: 8px 0 0; }
-
-.header {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.logo {
-  max-width: 140px;
-  margin: 0 auto 8px;
-  display: block;
-}
-
-.contacts {
-  font-size: 14px;
-  color: #374151;
-}
+.header { text-align: center; margin-bottom: 16px; }
+.logo { max-width: 130px; margin: 0 auto 6px; display: block; }
+.contacts { font-size: 14px; color: #374151; }
 
 .role-btn {
   padding: 12px;
@@ -40,7 +26,6 @@ h1 { margin: 8px 0 0; }
   font-size: 16px;
   background: #6366f1;
   color: #fff;
-  cursor: pointer;
 }
 
 .card {
@@ -62,32 +47,38 @@ h1 { margin: 8px 0 0; }
   height: 10px;
 }
 
-.badge {
-  display: inline-block;
-  background: #fde68a;
-  padding: 4px 8px;
+.hidden { display:none; }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
   border-radius: 10px;
-  font-size: 12px;
-  margin-right: 4px;
+  border: 1px solid #d1d5db;
 }
-
-.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
-<!-- ШАПКА -->
 <div class="header">
-  <img src="logo.png" alt="Логотип РАЗУМ" class="logo">
+  <img src="logo.png" class="logo">
   <h1>РАЗУМ</h1>
   <div class="contacts">
     📞 <a href="tel:+78913450309">8 913 450-30-09</a><br>
     📍 Санкт-Петербургский проспект, 60Л, 2 этаж
   </div>
+  <button class="role-btn" onclick="call()">Позвонить</button>
+  <button class="role-btn" onclick="route()">Маршрут</button>
 </div>
 
-<!-- РОЛИ -->
+<div id="onboarding" class="hidden">
+  <div class="card">
+    <h2>Добро пожаловать 👋</h2>
+    <p>Здесь вы видите задания логопеда, отмечаете выполнение и следите за прогрессом ребёнка.</p>
+    <button class="role-btn" onclick="finishOnboarding()">Начать</button>
+  </div>
+</div>
+
 <div id="roles">
   <button class="role-btn" onclick="showParent()">Я родитель</button>
   <button class="role-btn" onclick="showSpeech()">Я логопед</button>
@@ -99,36 +90,9 @@ h1 { margin: 8px 0 0; }
 <div id="admin" class="hidden"></div>
 
 <script>
-// ===== ДАННЫЕ =====
-const data = {
-  logopedists: {
-    "Васюкова А.А.": ["Артём", "Мирослава", "Фёдор"],
-    "Прокопенко С.Г.": ["Максим", "Тимофей"],
-    "Сафронова Н.Н.": ["Маша"]
-  }
-};
-
-const child = {
-  name: "Фёдор",
-  age: 4,
-  level: 3,
-  tasks: [
-    { id: 1, text: "Произнести 10 слов со звуком Р", done: false },
-    { id: 2, text: "Повторить скороговорку", done: false },
-    { id: 3, text: "Игра «Найди Р»", done: false }
-  ]
-};
-
-// ===== СОХРАНЕНИЕ =====
-const saved = localStorage.getItem("childProgress");
-if (saved) Object.assign(child, JSON.parse(saved));
-function save() {
-  localStorage.setItem("childProgress", JSON.stringify(child));
-}
-
-// ===== ОБЩЕЕ =====
+// ===== УТИЛИТЫ =====
 function hideAll() {
-  ["roles","parent","speech","admin"].forEach(id =>
+  ["roles","parent","speech","admin","onboarding"].forEach(id =>
     document.getElementById(id).classList.add("hidden")
   );
 }
@@ -136,92 +100,116 @@ function back() {
   hideAll();
   document.getElementById("roles").classList.remove("hidden");
 }
+function call() {
+  location.href = "tel:+78913450309";
+}
+function route() {
+  window.open("https://yandex.ru/maps/?text=Санкт-Петербургский%20проспект%2060Л");
+}
+
+// ===== ДАННЫЕ =====
+const data = {
+  children: {
+    "Фёдор": []
+  }
+};
+
+const childName = "Фёдор";
+
+// ===== ONBOARDING =====
+if (!localStorage.getItem("onboarded")) {
+  hideAll();
+  document.getElementById("onboarding").classList.remove("hidden");
+}
+function finishOnboarding() {
+  localStorage.setItem("onboarded","yes");
+  back();
+}
 
 // ===== РОДИТЕЛЬ =====
-function progress() {
-  return Math.round(
-    (child.tasks.filter(t => t.done).length / child.tasks.length) * 100
-  );
-}
-
-function toggle(id) {
-  const t = child.tasks.find(x => x.id === id);
-  t.done = !t.done;
-  if (child.tasks.every(x => x.done)) child.level++;
-  save();
-  renderParent();
-}
-
-function renderParent() {
+function showParent() {
   hideAll();
-  const p = document.getElementById("parent");
+  const el = document.getElementById("parent");
+  el.innerHTML = `<h2>${childName} (4 года)</h2>`;
 
-  p.innerHTML = `
-    <h2>${child.name} (${child.age} года)</h2>
+  const tasks = data.children[childName];
+  let done = tasks.filter(t=>t.done).length;
+  let progress = tasks.length ? Math.round(done/tasks.length*100) : 0;
+
+  el.innerHTML += `
     <div class="card">
-      Уровень: ${child.level} ⭐⭐⭐<br>
-      Прогресс: ${progress()}%
-      <div class="progress"><div style="width:${progress()}%"></div></div>
-      <p>
-        <span class="badge">🏆 Молодец</span>
-        <span class="badge">🔥 Серия</span>
-      </p>
+      Прогресс: ${progress}%
+      <div class="progress"><div style="width:${progress}%"></div></div>
     </div>
-    <h3>Задания на сегодня</h3>
   `;
 
-  child.tasks.forEach(t => {
-    p.innerHTML += `
+  tasks.forEach((t,i)=>{
+    el.innerHTML += `
       <div class="card">
         <label>
-          <input type="checkbox" ${t.done ? "checked" : ""}
-            onchange="toggle(${t.id})">
+          <input type="checkbox" ${t.done?"checked":""}
+            onchange="toggleTask(${i})">
           ${t.text}
         </label>
       </div>
     `;
   });
 
-  p.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
-  p.classList.remove("hidden");
+  el.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
+  el.classList.remove("hidden");
 }
-function showParent() { renderParent(); }
+
+function toggleTask(i) {
+  data.children[childName][i].done = !data.children[childName][i].done;
+  save();
+  showParent();
+}
 
 // ===== ЛОГОПЕД =====
 function showSpeech() {
   hideAll();
   const el = document.getElementById("speech");
+  el.innerHTML = `
+    <h2>Логопед</h2>
+    <div class="card">
+      <select id="kid">
+        <option>Фёдор</option>
+      </select>
+      <input id="taskText" placeholder="Новое задание">
+      <button class="role-btn" onclick="addTask()">Добавить задание</button>
+    </div>
+    <button class="role-btn" onclick="back()">Назад</button>
+  `;
   el.classList.remove("hidden");
-  el.innerHTML = "<h2>Логопед</h2>";
+}
 
-  Object.entries(data.logopedists).forEach(([name, kids]) => {
-    el.innerHTML += `
-      <div class="card">
-        <b>${name}</b><br>
-        Детей: ${kids.length}
-      </div>
-    `;
-  });
-
-  el.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
+function addTask() {
+  const kid = document.getElementById("kid").value;
+  const text = document.getElementById("taskText").value;
+  if (!text) return;
+  data.children[kid].push({ text, done:false });
+  save();
+  alert("Задание добавлено");
+  document.getElementById("taskText").value="";
 }
 
 // ===== АДМИН =====
 function showAdmin() {
   hideAll();
-  const el = document.getElementById("admin");
-  el.classList.remove("hidden");
-
-  let totalKids = 0;
-  Object.values(data.logopedists).forEach(k => totalKids += k.length);
-
-  el.innerHTML = `
+  document.getElementById("admin").innerHTML = `
     <h2>Администратор</h2>
-    <div class="card">👩‍⚕️ Логопедов: ${Object.keys(data.logopedists).length}</div>
-    <div class="card">👶 Детей всего: ${totalKids}</div>
-    <div class="card">📈 Центр работает стабильно ✅</div>
+    <div class="card">Дети: 1</div>
+    <div class="card">Система работает стабильно ✅</div>
     <button class="role-btn" onclick="back()">Назад</button>
   `;
+  document.getElementById("admin").classList.remove("hidden");
+}
+
+// ===== ХРАНЕНИЕ =====
+const saved = localStorage.getItem("razumData");
+if (saved) Object.assign(data, JSON.parse(saved));
+function save() {
+  localStorage.setItem("razumData", JSON.stringify(data));
 }
 </script>
 
