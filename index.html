@@ -1,41 +1,158 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<title>РАЗУМ — демо</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Разум — демо</title>
-<link rel="manifest" href="manifest.json">
 <style>
-body{font-family:Arial;background:#eef2ff;margin:0;padding:16px}
-.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
-button{padding:10px 14px;border-radius:12px;border:none;background:#6366f1;color:#fff}
-.small{font-size:14px;color:#555}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#fceabb,#f8b500);
+}
+.app {
+  max-width: 480px;
+  margin: auto;
+  padding: 16px;
+}
+h1 {
+  text-align: center;
+}
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+button {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #6c63ff;
+  color: #fff;
+  font-size: 14px;
+  margin: 4px 0;
+  width: 100%;
+}
+button.secondary {
+  background: #00b894;
+}
+.progress {
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress div {
+  height: 12px;
+  background: #6c63ff;
+}
+.badge {
+  display: inline-block;
+  background: gold;
+  padding: 6px 10px;
+  border-radius: 12px;
+  margin: 4px 0;
+  font-size: 12px;
+}
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 12px;
+}
+.small {
+  font-size: 13px;
+  color: #555;
+}
 </style>
 </head>
+
 <body>
-<h2>РАЗУМ — демо</h2>
-<p class="small">Логопедический центр · Петергоф</p>
+<div class="app">
+  <h1>🧠 РАЗУМ</h1>
+  <p style="text-align:center">Логопедический центр · Петергоф</p>
 
-<div class="card">
-<p><b>Роли</b></p>
-<button onclick="alert('Родитель: просмотр заданий и прогресса')">Родитель</button>
-<button onclick="alert('Логопед: дети и задания')">Логопед</button>
-<button onclick="alert('Администратор: весь центр')">Администратор</button>
-</div>
+  <div class="card">
+    <strong>Выберите роль</strong>
+    <select id="role" onchange="render()">
+      <option value="parent">Родитель</option>
+      <option value="logoped1">Логопед — Васюкова А.А.</option>
+      <option value="logoped2">Логопед — Прокопенко С.Г.</option>
+      <option value="logoped3">Логопед — Сафронова Н.Н.</option>
+      <option value="admin">Администратор</option>
+    </select>
+  </div>
 
-<div class="card">
-<p><b>Пример карточки ребёнка</b></p>
-<p>👶 Фёдор</p>
-<p>🎯 Цель: звук Р</p>
-<p>⭐ Прогресс: 60%</p>
-<button onclick="alert('Задание отмечено выполненным')">Отметить задание</button>
+  <div id="content"></div>
 </div>
 
 <script>
-if ('serviceWorker' in navigator) {
- navigator.serviceWorker.register('sw.js');
+const data = {
+  logopeds: {
+    logoped1: {
+      name: "Васюкова Анастасия Александровна",
+      kids: ["Фёдор","Александр","Артём","Мирослава","Яся","Владимир","Маргарита","Алексей","Константин","Пётр","Елизавета","Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина","Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"]
+    },
+    logoped2: {
+      name: "Прокопенко Светлана Геннадьевна",
+      kids: ["Давид","Максим","Максим","Максим","Татьяна","Илья","Глеб","Фёдор"]
+    },
+    logoped3: {
+      name: "Сафронова Наталья Николаевна",
+      kids: ["Майя"]
+    }
+  }
+};
+
+function kidCard(name) {
+  const progress = Math.floor(Math.random()*40)+40;
+  return `
+  <div class="card">
+    <strong>👶 ${name}</strong>
+    <p class="small">Возраст: 3–7 лет</p>
+    <p>🎯 Цель: развитие звуков и речи</p>
+
+    <div class="progress">
+      <div style="width:${progress}%"></div>
+    </div>
+    <p>${progress}% выполнено</p>
+
+    <div class="badge">⭐ Уровень: Молодец</div>
+
+    <p><strong>Задание-квест:</strong><br>
+    🐸 Произнеси «РА-РО-РУ» как лягушка</p>
+
+    <button class="secondary">✅ Выполнено</button>
+    <button>💬 Комментарий</button>
+  </div>`;
 }
+
+function render() {
+  const role = document.getElementById("role").value;
+  const c = document.getElementById("content");
+  c.innerHTML = "";
+
+  if (role === "parent") {
+    c.innerHTML = kidCard("Фёдор");
+  }
+
+  if (role.startsWith("logoped")) {
+    const l = data.logopeds[role];
+    c.innerHTML += `<div class="card"><strong>${l.name}</strong></div>`;
+    l.kids.forEach(k => c.innerHTML += kidCard(k));
+  }
+
+  if (role === "admin") {
+    c.innerHTML += `<div class="card"><strong>Администратор</strong><br>Васюков Юрий Сергеевич</div>`;
+    Object.values(data.logopeds).forEach(l => {
+      c.innerHTML += `<div class="card"><strong>${l.name}</strong><br>Детей: ${l.kids.length}</div>`;
+    });
+  }
+}
+
+render();
 </script>
 </body>
 </html>
