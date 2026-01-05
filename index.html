@@ -27,7 +27,7 @@ header { text-align:center; margin-bottom:16px; }
 .progress { background:#e5e7eb; border-radius:10px; overflow:hidden; }
 .progress div { background:#22c55e; height:10px; }
 .hidden { display:none; }
-textarea, input {
+textarea, input, select {
   width:100%; padding:8px; margin-top:6px;
   border-radius:8px; border:1px solid #ccc;
 }
@@ -55,19 +55,34 @@ textarea, input {
 
 <script>
 const data = JSON.parse(localStorage.getItem("razumData")) || {
-  child: {
-    name: "Фёдор",
-    age: 4,
-    tasks: [
-      { id:1, text:"Произнести 10 слов со звуком Р", done:false },
-      { id:2, text:"Слоги РА-РО-РУ", done:false }
-    ],
-    comment: ""
-  }
+  currentChildId: 1,
+  children: [
+    {
+      id: 1,
+      name: "Фёдор",
+      age: 4,
+      tasks: [
+        { id: 1, text: "Произнести 10 слов со звуком Р", done: false },
+        { id: 2, text: "Слоги РА-РО-РУ", done: false }
+      ],
+      comment: ""
+    },
+    {
+      id: 2,
+      name: "Алиса",
+      age: 5,
+      tasks: [],
+      comment: ""
+    }
+  ]
 };
 
 function save() {
   localStorage.setItem("razumData", JSON.stringify(data));
+}
+
+function currentChild() {
+  return data.children.find(c => c.id === data.currentChildId);
 }
 
 function hideAll() {
@@ -81,17 +96,39 @@ function back() {
   document.getElementById("roles").classList.remove("hidden");
 }
 
+function childSelector() {
+  return `
+    <select onchange="changeChild(this.value)">
+      ${data.children.map(c =>
+        `<option value="${c.id}" ${c.id===data.currentChildId?"selected":""}>
+          ${c.name} (${c.age})
+        </option>`
+      ).join("")}
+    </select>
+  `;
+}
+
+function changeChild(id){
+  data.currentChildId = Number(id);
+  save();
+  showParent();
+}
+
 /* РОДИТЕЛЬ */
 function showParent() {
   hideAll();
+  const c = currentChild();
   const p = document.getElementById("parent");
+
   p.innerHTML = `
-    <h2>${data.child.name} (${data.child.age} года)</h2>
-    <p><b>Комментарий логопеда:</b><br>${data.child.comment || "—"}</p>
-    <div class="progress"><div style="width:${progress()}%"></div></div>
+    ${childSelector()}
+    <h2>${c.name} (${c.age} года)</h2>
+    <p><b>Комментарий логопеда:</b><br>${c.comment || "—"}</p>
+    <div class="progress"><div style="width:${progress(c)}%"></div></div>
     <h3>Задания</h3>
   `;
-  data.child.tasks.forEach(t=>{
+
+  c.tasks.forEach(t=>{
     p.innerHTML += `
       <div class="card">
         <label>
@@ -101,28 +138,38 @@ function showParent() {
         </label>
       </div>`;
   });
+
   p.innerHTML += `<button class="role-btn" onclick="back()">Назад</button>`;
   p.classList.remove("hidden");
 }
 
 function toggle(id){
-  const t = data.child.tasks.find(x=>x.id===id);
-  t.done=!t.done; save(); showParent();
+  const c = currentChild();
+  const t = c.tasks.find(x=>x.id===id);
+  t.done = !t.done;
+  save();
+  showParent();
 }
-function progress(){
-  return data.child.tasks.filter(t=>t.done).length / data.child.tasks.length * 100;
+
+function progress(c){
+  if(!c.tasks.length) return 0;
+  return c.tasks.filter(t=>t.done).length / c.tasks.length * 100;
 }
 
 /* ЛОГОПЕД */
 function showSpeech() {
   hideAll();
+  const c = currentChild();
   const s = document.getElementById("speech");
+
   s.innerHTML = `
+    ${childSelector()}
     <h2>Логопед</h2>
     <div class="card">
-      <b>${data.child.name}</b><br>
+      <b>${c.name}</b><br>
       <textarea placeholder="Комментарий родителю"
-        onchange="data.child.comment=this.value;save()">${data.child.comment}</textarea>
+        onchange="c.comment=this.value;save()">${c.comment}</textarea>
+
       <h4>Новое задание</h4>
       <input id="taskText" placeholder="Введите задание">
       <button class="role-btn" onclick="addTask()">Добавить</button>
@@ -133,10 +180,11 @@ function showSpeech() {
 }
 
 function addTask(){
-  const text=document.getElementById("taskText").value;
+  const text = document.getElementById("taskText").value;
   if(!text) return;
-  data.child.tasks.push({id:Date.now(),text,done:false});
-  save(); showSpeech();
+  currentChild().tasks.push({id:Date.now(), text, done:false});
+  save();
+  showSpeech();
 }
 
 /* АДМИН */
@@ -145,13 +193,15 @@ function showAdmin(){
   const a=document.getElementById("admin");
   a.innerHTML=`
     <h2>Администратор</h2>
-    <div class="card">👶 Детей: 1</div>
+    <div class="card">👶 Детей: ${data.children.length}</div>
     <div class="card">👩‍⚕️ Логопедов: 3</div>
     <div class="card">Центр работает стабильно ✅</div>
     <button class="role-btn" onclick="back()">Назад</button>
   `;
   a.classList.remove("hidden");
 }
+
+save();
 </script>
 
 </body>
