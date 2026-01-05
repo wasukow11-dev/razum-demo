@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Разум — демо</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body{font-family:Arial;background:#eef2ff;margin:0;padding:16px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px}
+button{padding:10px 14px;border-radius:12px;border:none;background:#6366f1;color:#fff}
+.small{font-size:14px;color:#555}
+</style>
+</head>
+<body>
+<h2>РАЗУМ — демо</h2>
+<p class="small">Логопедический центр · Петергоф</p>
+
+<div class="card">
+<p><b>Роли</b></p>
+<button onclick="alert('Родитель: просмотр заданий и прогресса')">Родитель</button>
+<button onclick="alert('Логопед: дети и задания')">Логопед</button>
+<button onclick="alert('Администратор: весь центр')">Администратор</button>
+</div>
+
+<div class="card">
+<p><b>Пример карточки ребёнка</b></p>
+<p>👶 Фёдор</p>
+<p>🎯 Цель: звук Р</p>
+<p>⭐ Прогресс: 60%</p>
+<button onclick="alert('Задание отмечено выполненным')">Отметить задание</button>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+ navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
