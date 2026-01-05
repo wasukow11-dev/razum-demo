@@ -133,10 +133,28 @@ function showParent(){
   p.classList.remove("hidden");
 }
 
-/* ЛОГОПЕД */
+/* ЛОГОПЕД — ИСПРАВЛЕНО */
 function showSpeech(){
   hideAll();
   const s=document.getElementById("speech");
+
+  const children = therapistChildren();
+
+  if (!children.length) {
+    s.innerHTML = `
+      <div class="card">У логопеда пока нет детей</div>
+      <button class="role-btn" onclick="back()">Назад</button>`;
+    s.classList.remove("hidden");
+    return;
+  }
+
+  if (!children.find(c => c.id === data.currentChildId)) {
+    data.currentChildId = children[0].id;
+    save();
+  }
+
+  const c = currentChild();
+
   s.innerHTML=`
     <select onchange="data.currentTherapistId=Number(this.value);save();showSpeech()">
       ${data.speechTherapists.map(l=>`
@@ -146,14 +164,14 @@ function showSpeech(){
     </select>
 
     <select onchange="data.currentChildId=Number(this.value);save();showSpeech()">
-      ${therapistChildren().map(c=>`
-        <option value="${c.id}" ${c.id===data.currentChildId?"selected":""}>
-          ${c.name}
+      ${children.map(ch=>`
+        <option value="${ch.id}" ${ch.id===c.id?"selected":""}>
+          ${ch.name}
         </option>`).join("")}
     </select>
 
     <div class="card">
-      <textarea onchange="currentChild().comment=this.value;save()">${currentChild().comment}</textarea>
+      <textarea onchange="c.comment=this.value;save()">${c.comment}</textarea>
       <input id="taskText" placeholder="Новое задание">
       <button class="role-btn" onclick="addTask()">Добавить</button>
     </div>
