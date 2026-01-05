@@ -6,28 +6,77 @@
 <title>РАЗУМ — демо</title>
 
 <style>
-body {
-  font-family: -apple-system,BlinkMacSystemFont,Arial,sans-serif;
-  background: linear-gradient(180deg,#eef2ff,#ffffff);
-  margin:0; padding:16px; color:#1f2937;
+:root{
+  --primary:#4f46e5;
+  --accent:#22c55e;
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#1e293b;
 }
+
+body{
+  margin:0;
+  padding:16px;
+  font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
 h1,h2,h3{margin:8px 0}
+
 button{
-  width:100%; padding:14px; margin:6px 0;
-  border:none; border-radius:16px;
-  background:linear-gradient(135deg,#6366f1,#818cf8);
-  color:#fff; font-size:16px; cursor:pointer;
+  width:100%;
+  padding:14px;
+  margin:6px 0;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--primary),#818cf8);
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
 }
+
 .card{
-  background:#fff; border-radius:18px;
-  padding:16px; margin-bottom:14px;
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  background:var(--card);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
-.progress{background:#e5e7eb;border-radius:10px;overflow:hidden}
-.progress div{height:10px;background:linear-gradient(90deg,#22c55e,#4ade80)}
-.task{display:flex;justify-content:space-between;margin-top:8px}
+
+.progress{
+  background:#e5e7eb;
+  border-radius:10px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress div{
+  height:10px;
+  background:linear-gradient(90deg,var(--accent),#4ade80);
+}
+
+.task{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:8px;
+}
 .task.done{opacity:.5;text-decoration:line-through}
-.small{padding:6px 10px;border-radius:10px;background:#22c55e}
+
+.small{
+  padding:6px 12px;
+  border-radius:10px;
+  background:var(--accent);
+}
+
+input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  margin-top:6px;
+}
+
 .hidden{display:none}
 </style>
 </head>
@@ -35,9 +84,20 @@ button{
 <body>
 
 <h1>РАЗУМ</h1>
-<p>Логопедический центр • Петергоф<br>
-📞 8 913 450-30-29<br>
-📍 Санкт-Петербургский проспект 60Л, 2 этаж</p>
+
+<div class="card">
+  <p>
+    <b>Логопедический центр в Петергофе</b><br><br>
+    Мы работаем с детьми от 3 до 7 лет, помогая развивать речь,
+    уверенность и коммуникативные навыки.
+    Каждый ребёнок занимается по индивидуальной программе,
+    а родители всегда видят прогресс и рекомендации специалиста.
+  </p>
+  <p>
+    📞 8 913 450-30-29<br>
+    📍 Санкт-Петербургский проспект 60Л, 2 этаж
+  </p>
+</div>
 
 <div id="home">
   <button onclick="showParent()">👨‍👩‍👧 Родитель</button>
@@ -48,119 +108,153 @@ button{
 <div id="screen" class="hidden"></div>
 
 <script>
-/* ===== ДАННЫЕ ===== */
+/* ================= ДАННЫЕ ================= */
+const PRICE = 16000;
+
 const data = {
-  logopedists: {
-    "Васюкова А.А.": [
-      "Фёдор","Александр","Артём","Мирослава","Яся","Владимир",
-      "Маргарита","Алексей","Константин","Пётр","Елизавета",
-      "Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина",
-      "Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"
-    ],
-    "Прокопенко С.Г.": [
-      "Давид","Максим 1","Максим 2","Максим 3",
-      "Татьяна","Илья","Глеб","Фёдор П."
-    ],
-    "Сафронова Н.Н.": ["Майя"]
-  }
+  "Васюкова А.А.": [
+    "Фёдор","Александр","Артём","Мирослава","Яся","Владимир",
+    "Маргарита","Алексей","Константин","Пётр","Елизавета",
+    "Алёна","Мия","Таир","Стеша","Леонид","Савелий","Арина",
+    "Евгений","Вадим","Юлия","Кирилл","Зоя","Михаил"
+  ],
+  "Прокопенко С.Г.": [
+    "Давид","Максим","Максим (2)","Максим (3)",
+    "Татьяна","Илья","Глеб","Фёдор П."
+  ],
+  "Сафронова Н.Н.": ["Майя"]
 };
 
-const storage = JSON.parse(localStorage.getItem("razumAll")) || {};
+const store = JSON.parse(localStorage.getItem("razumStore")) || {};
 
-function getChild(name, spec){
-  if(!storage[name]){
-    storage[name]={
-      name, specialist:spec,
-      age:3+Math.floor(Math.random()*4),
-      level:1, lessons:8,
-      comment:"Хорошая динамика, продолжаем работу.",
-      tasks:[
-        {id:1,text:"Произнеси 10 слов со звуком",done:false},
-        {id:2,text:"Повтори упражнение",done:false},
-        {id:3,text:"Игровое задание",done:false}
-      ]
-    };
-  }
-  return storage[name];
+/* ================= УТИЛИТЫ ================= */
+function screen(){
+  const s=document.getElementById("screen");
+  s.classList.remove("hidden");
+  document.getElementById("home").classList.add("hidden");
+  return s;
+}
+function back(){
+  document.getElementById("screen").classList.add("hidden");
+  document.getElementById("home").classList.remove("hidden");
+}
+function save(){
+  localStorage.setItem("razumStore",JSON.stringify(store));
 }
 
-function save(){localStorage.setItem("razumAll",JSON.stringify(storage));}
-
-function hide(){document.getElementById("home").classList.add("hidden")}
-function back(){document.getElementById("screen").classList.add("hidden");
-  document.getElementById("home").classList.remove("hidden")}
-
-/* ===== РОДИТЕЛЬ ===== */
+/* ================= РОДИТЕЛЬ ================= */
 function showParent(){
-  hide(); const s=screen(); s.innerHTML="<h2>Выберите логопеда</h2>";
-  Object.keys(data.logopedists).forEach(l=>{
+  const s=screen();
+  s.innerHTML="<h2>Выберите логопеда</h2>";
+  Object.keys(data).forEach(l=>{
     s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
-  });
-}
-
-function parentKids(l){
-  const s=screen(); s.innerHTML=`<h2>${l}</h2>`;
-  data.logopedists[l].forEach(c=>{
-    s.innerHTML+=`<button onclick="childCard('${c}','${l}')">${c}</button>`;
   });
   s.innerHTML+=`<button onclick="back()">Назад</button>`;
 }
 
-/* ===== КАРТОЧКА РЕБЁНКА ===== */
-function childCard(name,spec){
-  const c=getChild(name,spec); save();
+function parentKids(log){
+  const s=screen();
+  s.innerHTML=`<h2>${log}</h2>`;
+  data[log].forEach(k=>{
+    s.innerHTML+=`<button onclick="childCard('${k}','${log}')">${k}</button>`;
+  });
+  s.innerHTML+=`<button onclick="showParent()">Назад</button>`;
+}
+
+/* ================= КАРТОЧКА РЕБЁНКА ================= */
+function childCard(name,log){
+  if(!store[name]){
+    store[name]={
+      name,
+      log,
+      age:3+Math.floor(Math.random()*4),
+      level:1,
+      lessons:8,
+      comment:"Хорошая динамика, продолжаем в том же темпе.",
+      tasks:[
+        {id:1,text:"Произнеси 10 слов с нужным звуком",done:false},
+        {id:2,text:"Повтори упражнение перед зеркалом",done:false},
+        {id:3,text:"Игровое задание на автоматизацию",done:false}
+      ]
+    };
+  }
+  save();
+  const c=store[name];
   const done=c.tasks.filter(t=>t.done).length;
   const s=screen();
+
   s.innerHTML=`
-  <h2>${c.name} (${c.age} лет)</h2>
-  <div class="card">
-    👩‍⚕️ ${c.specialist}<br>
-    🎟 Осталось занятий: ${c.lessons}<br>
-    ⭐ Уровень: ${c.level}
-    <div class="progress"><div style="width:${done/3*100}%"></div></div>
-    <p><b>Комментарий:</b><br>${c.comment}</p>
-    <h3>Задания</h3>
-    ${c.tasks.map(t=>`
-      <div class="task ${t.done?"done":""}">
-        ${t.text}
-        ${t.done?"✔":"<button class='small' onclick=\"doneTask('"+name+"',"+t.id+")\">Я выполнил</button>"}
-      </div>`).join("")}
-  </div>
-  <button onclick="back()">Назад</button>`;
+    <h2>${c.name} (${c.age} лет)</h2>
+    <div class="card">
+      👩‍⚕️ Логопед: ${c.log}<br>
+      🎟 Осталось занятий: ${c.lessons}<br>
+      ⭐ Уровень: ${c.level}
+      <div class="progress"><div style="width:${done/3*100}%"></div></div>
+
+      <p><b>Комментарий логопеда:</b><br>${c.comment}</p>
+
+      <h3>🎯 Задания</h3>
+      ${c.tasks.map(t=>`
+        <div class="task ${t.done?"done":""}">
+          ${t.text}
+          ${t.done?"✔️":"<button class='small' onclick=\"doneTask('${name}',${t.id})\">Я выполнил</button>"}
+        </div>`).join("")}
+    </div>
+
+    <button onclick="parentKids('${log}')">Назад</button>
+  `;
 }
 
 function doneTask(name,id){
-  const c=storage[name];
+  const c=store[name];
   const t=c.tasks.find(x=>x.id===id);
-  if(!t.done){t.done=true;if(c.tasks.every(x=>x.done))c.level++;}
-  save(); childCard(c.name,c.specialist);
+  if(!t.done){
+    t.done=true;
+    if(c.tasks.every(x=>x.done)) c.level++;
+    save();
+  }
+  childCard(c.name,c.log);
 }
 
-/* ===== ЛОГОПЕД ===== */
+/* ================= ЛОГОПЕД ================= */
 function showSpeech(){
-  hide(); const s=screen(); s.innerHTML="<h2>Логопеды</h2>";
-  Object.keys(data.logopedists).forEach(l=>{
+  const s=screen();
+  s.innerHTML="<h2>Логопеды</h2>";
+  Object.keys(data).forEach(l=>{
     s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
   });
+  s.innerHTML+=`<button onclick="back()">Назад</button>`;
 }
 
-/* ===== АДМИН ===== */
+/* ================= АДМИН ================= */
 function showAdmin(){
-  hide(); const s=screen();
-  let kids=Object.values(data.logopedists).flat().length;
+  const kids=Object.values(data).flat().length;
+  const s=screen();
   s.innerHTML=`
-  <h2>Администратор</h2>
-  <div class="card">
-    Логопедов: 3<br>
-    Детей: ${kids}<br>
-    Абонемент: 8 занятий / 16 000 ₽
-  </div>
-  <button onclick="back()">Назад</button>`;
+    <h2>Администратор</h2>
+
+    <div class="card">
+      👩‍⚕️ Логопедов: ${Object.keys(data).length}<br>
+      👶 Детей: ${kids}
+    </div>
+
+    <div class="card">
+      <b>Калькулятор прибыли</b><br><br>
+      Абонемент: 8 занятий = 16 000 ₽<br><br>
+      <label>Количество детей</label>
+      <input type="number" value="${kids}" id="calcKids" oninput="calc()">
+      <p id="sum" style="margin-top:10px;font-weight:bold"></p>
+    </div>
+
+    <button onclick="back()">Назад</button>
+  `;
+  calc();
 }
 
-function screen(){
-  const s=document.getElementById("screen");
-  s.classList.remove("hidden"); return s;
+function calc(){
+  const k=document.getElementById("calcKids").value||0;
+  document.getElementById("sum").innerText=
+    "Доход в месяц: "+(k*PRICE).toLocaleString()+" ₽";
 }
 </script>
 
