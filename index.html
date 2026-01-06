@@ -150,17 +150,19 @@ function initChild(name,log){
  save();
 }
 
-/* РОДИТЕЛЬ */
+/* === КЛИЕНТ === */
 function showParent(){
- const s=screen(); s.innerHTML="<h2>Выберите логопеда</h2>";
+ const s=screen(); s.innerHTML="<h2>Выберите специалиста</h2>";
  Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`);
  s.innerHTML+=`<button class="back" onclick="back()">Назад</button>`;
 }
+
 function parentKids(log){
  const s=screen(); s.innerHTML=`<h2>${log}</h2>`;
  data[log].forEach(k=>s.innerHTML+=`<button onclick="parentChild('${k}','${log}')">${k}</button>`);
  s.innerHTML+=`<button class="back" onclick="showParent()">Назад</button>`;
 }
+
 function parentChild(name,log){
  initChild(name,log);
  const c=store[name];
@@ -172,6 +174,7 @@ function parentChild(name,log){
  🎟 Осталось занятий: ${c.lessonsLeft}<br>
  🏆 Награды: ${c.reward}
  </div>
+
  <div class="card">
  ${c.tasks.map((t,i)=>`
   <div class="task ${t.status==='done'?'done':''}">
@@ -180,13 +183,16 @@ function parentChild(name,log){
   </div>`).join("")}
  <button onclick="send('${name}')">Я выполнил задания</button>
  </div>
+
  <button class="back" onclick="parentKids('${log}')">Назад</button>`;
 }
+
 function toggle(name,i){
  const t=store[name].tasks[i];
  if(t.status==="active")t.checked=!t.checked;
  save();
 }
+
 function send(name){
  const c=store[name];
  if(!c.tasks.every(t=>t.checked))return alert("Отметьте все задания");
@@ -194,19 +200,25 @@ function send(name){
  save(); parentChild(name,c.log);
 }
 
-/* ЛОГОПЕД */
+/* === СПЕЦИАЛИСТ === */
 function showSpeech(){
- const s=screen(); s.innerHTML="<h2>Логопеды</h2>";
+ const s=screen(); s.innerHTML="<h2>Специалисты</h2>";
  Object.keys(data).forEach(l=>s.innerHTML+=`<button onclick="speechKids('${l}')">${l}</button>`);
  s.innerHTML+=`<button class="back" onclick="back()">Назад</button>`;
 }
+
 function speechKids(log){
  const s=screen();
  s.innerHTML=`<h2>${log}</h2>
- <div class="card"><b>Расписание на сегодня</b><br>16:00 • ${data[log][0]||""}<br>16:40 • ${data[log][1]||""}</div>`;
+ <div class="card">
+ <b>Расписание на сегодня</b><br>
+ 16:00 — ${data[log][0]||""}<br>
+ 16:40 — ${data[log][1]||""}
+ </div>`;
  data[log].forEach(k=>s.innerHTML+=`<button onclick="speechChild('${k}','${log}')">${k}</button>`);
  s.innerHTML+=`<button class="back" onclick="showSpeech()">Назад</button>`;
 }
+
 function speechChild(name,log){
  initChild(name,log);
  const c=store[name];
@@ -228,12 +240,14 @@ function speechChild(name,log){
  </div>
  <button class="back" onclick="speechKids('${log}')">Назад</button>`;
 }
+
 function approve(name){
  store[name].tasks.forEach(t=>t.status="done");
  store[name].lessonsLeft--;
  store[name].reward++;
  save(); speechChild(name,store[name].log);
 }
+
 function assign(name){
  const sel=[...document.getElementById("newTasks").selectedOptions].map(o=>o.value);
  if(!sel.length)return;
@@ -241,7 +255,7 @@ function assign(name){
  save(); speechChild(name,store[name].log);
 }
 
-/* АДМИН */
+/* === АДМИНИСТРАТОР === */
 function showAdmin(){
  const kids=Object.values(data).flat().length;
  const lessons=kids*8;
@@ -254,7 +268,7 @@ function showAdmin(){
  <div class="card">
  👶 Детей: ${kids}<br>
  💰 Доход: ${income.toLocaleString()} ₽<br>
- 👩‍⚕️ Логопеды: ${staff.toLocaleString()} ₽<br>
+ 👩‍⚕️ Выплаты специалистам: ${staff.toLocaleString()} ₽<br>
  🏢 Аренда: ${RENT.toLocaleString()} ₽<br><br>
  📈 <b>Прибыль: ${profit.toLocaleString()} ₽</b>
  </div>
