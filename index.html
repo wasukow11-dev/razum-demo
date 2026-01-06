@@ -25,6 +25,8 @@ body{
   color:var(--text);
 }
 
+h1{margin-top:0}
+
 button{
   width:100%;
   padding:14px;
@@ -37,7 +39,7 @@ button{
 }
 
 .back{
-  background:linear-gradient(135deg,var(--back),#475569)
+  background:linear-gradient(135deg,var(--back),#475569);
 }
 
 .card{
@@ -56,20 +58,20 @@ button{
 
 .task.done{
   opacity:.5;
-  text-decoration:line-through
-}
-
-.reward{
-  margin-top:12px;
-  padding:12px;
-  border-radius:16px;
-  background:rgba(250,204,21,.15);
-  color:var(--gold);
-  text-align:center;
-  font-size:18px;
+  text-decoration:line-through;
 }
 
 .hidden{display:none}
+
+.badge{
+  background:var(--gold);
+  color:#000;
+  padding:6px 10px;
+  border-radius:14px;
+  font-size:12px;
+  display:inline-block;
+  margin-top:8px;
+}
 
 select,textarea{
   width:100%;
@@ -86,7 +88,7 @@ select,textarea{
 
 <h1>РАЗУМ</h1>
 
-<!-- БЛОК О ЦЕНТРЕ -->
+<!-- 🔒 ПОЛНЫЙ БЛОК О ЦЕНТРЕ (ВОССТАНОВЛЕН И ЗАФИКСИРОВАН) -->
 <div class="card">
   <b style="font-size:18px">Логопедический центр «Разум»</b><br><br>
 
@@ -102,10 +104,15 @@ select,textarea{
   родители понимают результат,
   логопеды работают в удобном цифровом пространстве.<br><br>
 
+  Наша цель — не просто исправить звук,
+  а сформировать устойчивый навык речи и уверенности у ребёнка,
+  сохраняя спокойствие и контроль для родителей.<br><br>
+
   📞 <b>8 913 450-30-29</b><br>
   📍 Санкт-Петербургский проспект 60Л, 2 этаж
 </div>
 
+<!-- ГЛАВНЫЕ РОЛИ -->
 <div id="home">
   <button onclick="showParent()">Родитель</button>
   <button onclick="showSpeech()">Логопед</button>
@@ -115,193 +122,210 @@ select,textarea{
 <div id="screen" class="hidden"></div>
 
 <script>
-const PRICE=16000;
+/* ================== ДАННЫЕ ================== */
 
-const data={
-  "Васюкова А.А.":["Фёдор","Артём","Мирослава","Александр","Яся"],
-  "Прокопенко С.Г.":["Давид","Максим","Илья"],
-  "Сафронова Н.Н.":["Майя"]
+const PRICE = 16000;
+
+const data = {
+  "Васюкова А.А.": ["Фёдор","Артём","Мирослава","Александр","Яся"],
+  "Прокопенко С.Г.": ["Давид","Максим","Илья"],
+  "Сафронова Н.Н.": ["Майя"]
 };
 
-const store=JSON.parse(localStorage.getItem("razum"))||{};
-function save(){localStorage.setItem("razum",JSON.stringify(store))}
+const store = JSON.parse(localStorage.getItem("razum")) || {};
 
-const home=document.getElementById("home");
-const screenEl=document.getElementById("screen");
+function save(){
+  localStorage.setItem("razum", JSON.stringify(store));
+}
+
+const home = document.getElementById("home");
+const screenEl = document.getElementById("screen");
 
 function screen(){
   home.classList.add("hidden");
   screenEl.classList.remove("hidden");
   return screenEl;
 }
+
 function back(){
   screenEl.classList.add("hidden");
   home.classList.remove("hidden");
 }
 
-function initChild(name,log){
- if(store[name])return;
- store[name]={
-   name,log,
-   lessonsLeft:8,
-   todayLesson:true,
-   reward:null,
-   tasks:[
-     {text:"Произнести слова со звуком Р",status:"active"},
-     {text:"Артикуляционная гимнастика",status:"active"}
-   ]
- };
- save();
+/* ============== ИНИЦИАЛИЗАЦИЯ РЕБЁНКА ============== */
+
+function initChild(name, log){
+  if(store[name]) return;
+  store[name] = {
+    name,
+    log,
+    lessonsLeft: 8,
+    reward: 0,
+    tasks: [
+      { text: "Произнести слова со звуком Р", status: "active" },
+      { text: "Артикуляционная гимнастика", status: "active" }
+    ]
+  };
+  save();
 }
 
-/* === РОДИТЕЛЬ === */
+/* ============== ДОП. БЛОК ДЛЯ РЕБЁНКА ============== */
+
+function childExtraInfo(c){
+  return `
+  <div class="card">
+    📅 Сегодня занятие в <b>16:30</b><br>
+    🎟 Осталось занятий: <b>${c.lessonsLeft}</b><br>
+    🏆 Награды: <b>${c.reward}</b>
+  </div>`;
+}
+
+/* ================== РОДИТЕЛЬ ================== */
+
 function showParent(){
- const s=screen(); 
- s.innerHTML="<h2>Выберите логопеда</h2>";
- Object.keys(data).forEach(l=>{
-   s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
- });
- s.innerHTML+=`<button class="back" onclick="back()">Назад</button>`;
+  const s = screen();
+  s.innerHTML = "<h2>Выберите логопеда</h2>";
+  Object.keys(data).forEach(l=>{
+    s.innerHTML += `<button onclick="parentKids('${l}')">${l}</button>`;
+  });
+  s.innerHTML += `<button class="back" onclick="back()">Назад</button>`;
 }
 
 function parentKids(log){
- const s=screen(); 
- s.innerHTML=`<h2>${log}</h2>`;
- data[log].forEach(k=>{
-   s.innerHTML+=`<button onclick="parentChild('${k}','${log}')">${k}</button>`;
- });
- s.innerHTML+=`<button class="back" onclick="showParent()">Назад</button>`;
+  const s = screen();
+  s.innerHTML = `<h2>${log}</h2>`;
+  data[log].forEach(k=>{
+    s.innerHTML += `<button onclick="parentChild('${k}','${log}')">${k}</button>`;
+  });
+  s.innerHTML += `<button class="back" onclick="showParent()">Назад</button>`;
 }
 
-function parentChild(name,log){
- initChild(name,log);
- const c=store[name];
- const s=screen();
+function parentChild(name, log){
+  initChild(name, log);
+  const c = store[name];
+  const s = screen();
 
- s.innerHTML=`
- <h2>${name}</h2>
-
- <div class="card">
-   📅 ${c.todayLesson ? "Сегодня у тебя занятие ❤️" : "Сегодня занятий нет"}<br>
-   🎟 Осталось занятий: <b>${c.lessonsLeft}</b>
- </div>
-
- <div class="card">
- ${c.tasks.map((t,i)=>`
-  <div class="task ${t.status==='done'?'done':''}">
-   ${t.status==='active'
-     ? `<input type="checkbox" onchange="toggle('${name}',${i})">`
-     : ""
-   }
-   ${t.text} (${t.status})
+  s.innerHTML = `
+  <h2>${name}</h2>
+  ${childExtraInfo(c)}
+  <div class="card">
+    ${c.tasks.map((t,i)=>`
+      <div class="task ${t.status==='done'?'done':''}">
+        ${t.status==='active'
+          ? `<input type="checkbox" onchange="toggle('${name}',${i})">`
+          : ''}
+        ${t.text} (${t.status})
+      </div>`).join("")}
+    <button onclick="send('${name}')">Я выполнил задания</button>
+    ${c.reward>0?`<div class="badge">🎉 Получена награда</div>`:""}
   </div>
- `).join("")}
-
- <button onclick="send('${name}')">Я выполнил задания</button>
-
- ${c.reward ? `<div class="reward">🏆 ${c.reward}</div>` : ""}
- </div>
-
- <button class="back" onclick="parentKids('${log}')">Назад</button>
- `;
+  <button class="back" onclick="parentKids('${log}')">Назад</button>`;
 }
 
 function toggle(name,i){
- const t=store[name].tasks[i];
- if(t.status==="active") t.checked=!t.checked;
- save();
+  const t = store[name].tasks[i];
+  if(t.status==="active") t.checked = !t.checked;
+  save();
 }
 
 function send(name){
- const c=store[name];
- if(!c.tasks.every(t=>t.checked)) return alert("Отметь все задания 🙂");
- c.tasks.forEach(t=>{
-   t.status="review";
-   delete t.checked;
- });
- c.reward="Ты большой молодец! ⭐";
- save();
- parentChild(name,c.log);
+  const c = store[name];
+  if(!c.tasks.every(t=>t.checked)){
+    alert("Отметьте все задания");
+    return;
+  }
+  c.tasks.forEach(t=>{
+    t.status="review";
+    delete t.checked;
+  });
+  save();
+  parentChild(name, c.log);
 }
 
-/* === ЛОГОПЕД === */
+/* ================== ЛОГОПЕД ================== */
+
 function showSpeech(){
- const s=screen(); 
- s.innerHTML="<h2>Логопеды</h2>";
- Object.keys(data).forEach(l=>{
-   s.innerHTML+=`<button onclick="speechKids('${l}')">${l}</button>`;
- });
- s.innerHTML+=`<button class="back" onclick="back()">Назад</button>`;
+  const s = screen();
+  s.innerHTML = "<h2>Логопеды</h2>";
+  Object.keys(data).forEach(l=>{
+    s.innerHTML += `<button onclick="speechKids('${l}')">${l}</button>`;
+  });
+  s.innerHTML += `<button class="back" onclick="back()">Назад</button>`;
 }
 
 function speechKids(log){
- const s=screen(); 
- s.innerHTML=`<h2>${log}</h2>`;
- data[log].forEach(k=>{
-   s.innerHTML+=`<button onclick="speechChild('${k}','${log}')">${k}</button>`;
- });
- s.innerHTML+=`<button class="back" onclick="showSpeech()">Назад</button>`;
+  const s = screen();
+  s.innerHTML = `
+    <h2>${log}</h2>
+    <div class="card">
+      <b>Расписание на сегодня</b><br>
+      16:00 • ${data[log][0]||""}<br>
+      16:40 • ${data[log][1]||""}
+    </div>`;
+  data[log].forEach(k=>{
+    s.innerHTML += `<button onclick="speechChild('${k}','${log}')">${k}</button>`;
+  });
+  s.innerHTML += `<button class="back" onclick="showSpeech()">Назад</button>`;
 }
 
-function speechChild(name,log){
- initChild(name,log);
- const c=store[name];
- const review=c.tasks.every(t=>t.status==="review");
- const s=screen();
+function speechChild(name, log){
+  initChild(name, log);
+  const c = store[name];
+  const ready = c.tasks.every(t=>t.status==="review");
+  const s = screen();
 
- s.innerHTML=`
- <h2>${name}</h2>
-
- <div class="card">
- ${c.tasks.map(t=>`
-   <div class="task">${t.text} (${t.status})</div>
- `).join("")}
-
- ${review ? `
-   <button onclick="approve('${name}')">Подтвердить выполнение</button>
-
-   <select id="newTasks" multiple>
-     <option>Автоматизация звука</option>
-     <option>Слоговые цепочки</option>
-     <option>Игровое задание</option>
-   </select>
-
-   <button onclick="assign('${name}')">Назначить новые задания</button>
- ` : ""}
- </div>
-
- <button class="back" onclick="speechKids('${log}')">Назад</button>
- `;
+  s.innerHTML = `
+  <h2>${name}</h2>
+  <div class="card">
+    ${c.tasks.map(t=>`
+      <div class="task">${t.text} (${t.status})</div>`).join("")}
+    ${ready ? `
+      <button onclick="approve('${name}')">Подтвердить выполнение</button>
+      <select id="newTasks" multiple>
+        <option>Автоматизация звука</option>
+        <option>Слоговые цепочки</option>
+        <option>Игровое задание</option>
+      </select>
+      <button onclick="assign('${name}')">Назначить новые</button>
+    ` : ""}
+  </div>
+  <button class="back" onclick="speechKids('${log}')">Назад</button>`;
 }
 
 function approve(name){
- store[name].tasks.forEach(t=>t.status="done");
- store[name].lessonsLeft--;
- save();
- speechChild(name,store[name].log);
+  const c = store[name];
+  c.tasks.forEach(t=>t.status="done");
+  c.lessonsLeft--;
+  c.reward++;
+  save();
+  speechChild(name, c.log);
 }
 
 function assign(name){
- const sel=[...document.getElementById("newTasks").selectedOptions].map(o=>o.value);
- if(!sel.length) return;
- store[name].tasks=sel.map(t=>({text:t,status:"active"}));
- store[name].reward=null;
- save();
- speechChild(name,store[name].log);
+  const sel = [...document.getElementById("newTasks").selectedOptions].map(o=>o.value);
+  if(!sel.length) return;
+  store[name].tasks = sel.map(t=>({text:t,status:"active"}));
+  save();
+  speechChild(name, store[name].log);
 }
 
-/* === АДМИН === */
+/* ================== АДМИН ================== */
+
 function showAdmin(){
- const kids=Object.values(data).flat().length;
- const s=screen();
- s.innerHTML=`
- <h2>Администратор</h2>
- <div class="card">
- 👶 Детей: ${kids}<br>
- 💰 Доход: ${(kids*PRICE).toLocaleString()} ₽
- </div>
- <button class="back" onclick="back()">Назад</button>
- `;
+  const kids = Object.values(data).flat().length;
+  const income = kids * PRICE;
+  const expenses = kids * 3000;
+  const s = screen();
+
+  s.innerHTML = `
+  <h2>Администратор</h2>
+  <div class="card">
+    👶 Детей: ${kids}<br>
+    💰 Доход: ${income.toLocaleString()} ₽<br>
+    📉 Расходы: ${expenses.toLocaleString()} ₽<br>
+    📈 Прибыль: ${(income-expenses).toLocaleString()} ₽
+  </div>
+  <button class="back" onclick="back()">Назад</button>`;
 }
 </script>
 </body>
