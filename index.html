@@ -11,10 +11,10 @@
   --card:#020617ee;
   --primary:#6366f1;
   --accent:#22c55e;
-  --gold:#facc15;
   --text:#f8fafc;
   --muted:#94a3b8;
   --back:#334155;
+  --gold:#facc15;
 }
 
 body{
@@ -60,17 +60,18 @@ button{
 }
 
 .reward{
-  background:linear-gradient(135deg,#16a34a,#22c55e);
+  margin-top:12px;
   padding:12px;
   border-radius:16px;
-  margin-top:12px;
+  background:rgba(250,204,21,.15);
+  color:var(--gold);
   text-align:center;
-  font-weight:bold;
+  font-size:18px;
 }
 
 .hidden{display:none}
 
-select{
+select,textarea{
   width:100%;
   padding:8px;
   border-radius:12px;
@@ -85,29 +86,28 @@ select{
 
 <h1>РАЗУМ</h1>
 
-<!-- 🔒 ПОЛНЫЙ БЛОК О ЦЕНТРЕ (ВОССТАНОВЛЕН) -->
+<!-- БЛОК О ЦЕНТРЕ -->
 <div class="card">
   <b style="font-size:18px">Логопедический центр «Разум»</b><br><br>
 
   Мы — логопедический центр в Петергофе, который помогает детям
   от 3 до 7 лет развивать речь, уверенность и коммуникативные навыки.<br><br>
 
-  В работе мы опираемся на индивидуальные программы, регулярную
-  обратную связь и понятный результат, который родители могут
-  отслеживать в реальном времени.<br><br>
+  Мы работаем по индивидуальным программам и делаем процесс
+  максимально прозрачным для родителей:
+  вы видите задания, прогресс и обратную связь специалиста.<br><br>
 
   Это приложение — часть нашей системы:
-  дети вовлекаются через задания и награды,
-  родители понимают, за что платят,
-  логопеды работают в удобном цифровом пространстве,
-  администратор видит полную картину центра.<br><br>
+  дети вовлекаются через понятные задания,
+  родители понимают результат,
+  логопеды работают в удобном цифровом пространстве.<br><br>
 
   📞 <b>8 913 450-30-29</b><br>
   📍 Санкт-Петербургский проспект 60Л, 2 этаж
 </div>
 
 <div id="home">
-  <button onclick="showParent()">Клиент</button>
+  <button onclick="showParent()">Родитель</button>
   <button onclick="showSpeech()">Логопед</button>
   <button onclick="showAdmin()">Администратор</button>
 </div>
@@ -118,27 +118,37 @@ select{
 const PRICE=16000;
 
 const data={
-  "Васюкова Анастасия Александровна":["Фёдор","Артём","Мирослава","Александр","Яся"],
-  "Прокопенко Светлана Геннадьевна":["Давид","Максим","Илья"],
-  "Сафронова Наталья Николаевна":["Майя"]
+  "Васюкова А.А.":["Фёдор","Артём","Мирослава","Александр","Яся"],
+  "Прокопенко С.Г.":["Давид","Максим","Илья"],
+  "Сафронова Н.Н.":["Майя"]
 };
 
 const store=JSON.parse(localStorage.getItem("razum"))||{};
-
 function save(){localStorage.setItem("razum",JSON.stringify(store))}
-function screen(){home.classList.add("hidden");screenEl.classList.remove("hidden");return screenEl}
-function back(){screenEl.classList.add("hidden");home.classList.remove("hidden")}
 
 const home=document.getElementById("home");
 const screenEl=document.getElementById("screen");
 
+function screen(){
+  home.classList.add("hidden");
+  screenEl.classList.remove("hidden");
+  return screenEl;
+}
+function back(){
+  screenEl.classList.add("hidden");
+  home.classList.remove("hidden");
+}
+
 function initChild(name,log){
  if(store[name])return;
  store[name]={
-   name,log,reward:false,
+   name,log,
+   lessonsLeft:8,
+   todayLesson:true,
+   reward:null,
    tasks:[
-     {text:"Произнести слова со звуком Р",status:"active",checked:false},
-     {text:"Артикуляционная гимнастика",status:"active",checked:false}
+     {text:"Произнести слова со звуком Р",status:"active"},
+     {text:"Артикуляционная гимнастика",status:"active"}
    ]
  };
  save();
@@ -146,8 +156,8 @@ function initChild(name,log){
 
 /* === РОДИТЕЛЬ === */
 function showParent(){
- const s=screen();
- s.innerHTML="<h2>Выберите специалиста</h2>";
+ const s=screen(); 
+ s.innerHTML="<h2>Выберите логопеда</h2>";
  Object.keys(data).forEach(l=>{
    s.innerHTML+=`<button onclick="parentKids('${l}')">${l}</button>`;
  });
@@ -155,7 +165,7 @@ function showParent(){
 }
 
 function parentKids(log){
- const s=screen();
+ const s=screen(); 
  s.innerHTML=`<h2>${log}</h2>`;
  data[log].forEach(k=>{
    s.innerHTML+=`<button onclick="parentChild('${k}','${log}')">${k}</button>`;
@@ -170,43 +180,53 @@ function parentChild(name,log){
 
  s.innerHTML=`
  <h2>${name}</h2>
+
+ <div class="card">
+   📅 ${c.todayLesson ? "Сегодня у тебя занятие ❤️" : "Сегодня занятий нет"}<br>
+   🎟 Осталось занятий: <b>${c.lessonsLeft}</b>
+ </div>
+
  <div class="card">
  ${c.tasks.map((t,i)=>`
   <div class="task ${t.status==='done'?'done':''}">
-   ${t.status==='active'?`
-     <input type="checkbox" ${t.checked?'checked':''}
-     onchange="toggle('${name}',${i})">
-   `:""}
+   ${t.status==='active'
+     ? `<input type="checkbox" onchange="toggle('${name}',${i})">`
+     : ""
+   }
    ${t.text} (${t.status})
-  </div>`).join("")}
-
- ${c.reward?`<div class="reward">🏆 Молодец! Задания выполнены!</div>`:""}
+  </div>
+ `).join("")}
 
  <button onclick="send('${name}')">Я выполнил задания</button>
+
+ ${c.reward ? `<div class="reward">🏆 ${c.reward}</div>` : ""}
  </div>
- <button class="back" onclick="parentKids('${log}')">Назад</button>`;
+
+ <button class="back" onclick="parentKids('${log}')">Назад</button>
+ `;
 }
 
 function toggle(name,i){
- store[name].tasks[i].checked=!store[name].tasks[i].checked;
+ const t=store[name].tasks[i];
+ if(t.status==="active") t.checked=!t.checked;
  save();
 }
 
 function send(name){
  const c=store[name];
- if(!c.tasks.every(t=>t.checked)){
-   alert("Отметьте все задания");
-   return;
- }
- c.tasks.forEach(t=>t.status="review");
- c.reward=true;
+ if(!c.tasks.every(t=>t.checked)) return alert("Отметь все задания 🙂");
+ c.tasks.forEach(t=>{
+   t.status="review";
+   delete t.checked;
+ });
+ c.reward="Ты большой молодец! ⭐";
  save();
  parentChild(name,c.log);
 }
 
 /* === ЛОГОПЕД === */
 function showSpeech(){
- const s=screen();
+ const s=screen(); 
  s.innerHTML="<h2>Логопеды</h2>";
  Object.keys(data).forEach(l=>{
    s.innerHTML+=`<button onclick="speechKids('${l}')">${l}</button>`;
@@ -215,7 +235,7 @@ function showSpeech(){
 }
 
 function speechKids(log){
- const s=screen();
+ const s=screen(); 
  s.innerHTML=`<h2>${log}</h2>`;
  data[log].forEach(k=>{
    s.innerHTML+=`<button onclick="speechChild('${k}','${log}')">${k}</button>`;
@@ -226,46 +246,46 @@ function speechKids(log){
 function speechChild(name,log){
  initChild(name,log);
  const c=store[name];
- const canApprove=c.tasks.every(t=>t.status==="review");
+ const review=c.tasks.every(t=>t.status==="review");
  const s=screen();
 
  s.innerHTML=`
  <h2>${name}</h2>
+
  <div class="card">
- ${c.tasks.map(t=>`<div class="task">${t.text} (${t.status})</div>`).join("")}
+ ${c.tasks.map(t=>`
+   <div class="task">${t.text} (${t.status})</div>
+ `).join("")}
 
- ${canApprove?`
- <label>
-   <input type="checkbox" id="ok">
-   Подтверждаю выполнение заданий
- </label>
+ ${review ? `
+   <button onclick="approve('${name}')">Подтвердить выполнение</button>
 
- <div id="new" class="hidden">
    <select id="newTasks" multiple>
      <option>Автоматизация звука</option>
      <option>Слоговые цепочки</option>
      <option>Игровое задание</option>
    </select>
-   <button onclick="assign('${name}')">Отправить ребёнку</button>
- </div>
- `:""}
- </div>
- <button class="back" onclick="speechKids('${log}')">Назад</button>`;
 
- const chk=document.getElementById("ok");
- if(chk){
-   chk.onchange=()=>document.getElementById("new").classList.toggle("hidden");
- }
+   <button onclick="assign('${name}')">Назначить новые задания</button>
+ ` : ""}
+ </div>
+
+ <button class="back" onclick="speechKids('${log}')">Назад</button>
+ `;
+}
+
+function approve(name){
+ store[name].tasks.forEach(t=>t.status="done");
+ store[name].lessonsLeft--;
+ save();
+ speechChild(name,store[name].log);
 }
 
 function assign(name){
  const sel=[...document.getElementById("newTasks").selectedOptions].map(o=>o.value);
- if(!sel.length){
-   alert("Выберите задания");
-   return;
- }
- store[name].tasks=sel.map(t=>({text:t,status:"active",checked:false}));
- store[name].reward=false;
+ if(!sel.length) return;
+ store[name].tasks=sel.map(t=>({text:t,status:"active"}));
+ store[name].reward=null;
  save();
  speechChild(name,store[name].log);
 }
@@ -280,7 +300,8 @@ function showAdmin(){
  👶 Детей: ${kids}<br>
  💰 Доход: ${(kids*PRICE).toLocaleString()} ₽
  </div>
- <button class="back" onclick="back()">Назад</button>`;
+ <button class="back" onclick="back()">Назад</button>
+ `;
 }
 </script>
 </body>
